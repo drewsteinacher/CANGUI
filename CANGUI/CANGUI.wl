@@ -654,6 +654,9 @@ row := rowCount++;
 colCount = 1;
 col := colCount++;
 
+Attributes[byte] = {HoldAllComplete};
+Attributes[bit] = {HoldAllComplete};
+
 CANMessageSpacePlot[] := Module[{sa},
 	colCount = rowCount = 1;
 	sa = SparseArray[
@@ -673,7 +676,7 @@ CANMessageSpacePlot[] := Module[{sa},
 
 ];
 
-(* Avoids subsequent messages getting overriden while maintaining order *)
+(* Avoids subsequent messages getting overridden while maintaining order *)
 processMessages[x_] := Reverse @ DeleteDuplicatesBy[Reverse @ Flatten[x], First];
 
 topScale[] := Module[{r},
@@ -698,18 +701,31 @@ topScale[] := Module[{r},
 
 plotMessages[] := Module[{r},
 	Flatten @ {
-		r = row;
-		addBit[r, 0, "0x002"],
-		addBit[r, 1, "AAA", Print["a"];, "AAAA"],
-		addBit[r, 4, "B", Print["b"];, "BBB"],
+		addMessageRow["0x002",
+			bit[1, "AAA", Print["a"];, "AAAA"],
+			bit[4, "B", Print["b"];, "BBB"]
+		],
 		
-		r = row;
-		addBit[r, 0, "0x152"],
-		addByte[r, 2, 0, "CCC"],
-		addByte[r, 1, 0, "DDD"]
+		addMessageRow["0x152",
+			byte[2, 0, "CCC"],
+			byte[1, 0, "DDD"]
+		],
+		
+		addMessageRow["0x140",
+			byte[3, 0, "short", Print["ZZZ"];, "tooltip"],
+			bit[3, "B", Print["QQQ"];, "tooltip #2"]
+		]
 	}
 ];
 
+addMessageRow[id_String, bitsAndBytes__] := Module[
+	{r = row},
+	Join[
+		{addBit[r, 0, id]},
+		Cases[{bitsAndBytes}, byte[args__] :> addByte[r, args]],
+		Cases[{bitsAndBytes}, bit[args__] :> addBit[r, args]]
+	]
+];
 
 Attributes[addBit] = {HoldRest};
 addBit[r_Integer?Positive, colPosition_Integer, buttonArguments__] := Block[
