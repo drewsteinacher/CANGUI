@@ -8,6 +8,8 @@ bitGet::usage = "bitGet[td_TemporalData, k_Integer] gets the kth bit from the gi
 nibbleGet::usage = "nibbleGet[byte_, n_Integer, offset_Integer:0] gets the nth nibble from the right in byte (with an optional offset)";
 bitPlot::usage = "bitPlot[byte] plots the bits in the given byte in one plot";
 
+CANMessageSpacePlot::usage = "CANMessageSpacePlot plots out which parts of the message space correspond to which messages";
+
 Begin["`Private`"];
 
 (* This is the structure the Arduino writes to the SD card *)
@@ -644,6 +646,105 @@ validPlotChoiceQ[plotChoice_Association] := With[{ids = StringTrim @ StringSplit
 		MatchQ[plotChoice["Options"], Hold[{___Rule}]]
 	]
 ];
+
+
+rowCount = 1;
+row := rowCount++;
+
+colCount = 1;
+col := colCount++;
+
+CANMessageSpacePlot[] := Module[{sa},
+	colCount = rowCount = 1;
+	sa = SparseArray[
+		processMessages @ {
+			topScale[],
+			plotMessages[]
+		},
+		{rowCount - 1, 33},
+		SpanFromLeft
+	];
+	
+	Grid[
+		Normal[sa],
+		Frame -> All,
+		Alignment -> {Center, Center}
+	]
+
+];
+
+(* Avoids subsequent messages getting overriden while maintaining order *)
+processMessages[x_] := Reverse @ DeleteDuplicatesBy[Reverse @ Flatten[x], First];
+
+topScale[] := Module[{r},
+	Flatten @ {
+	(* Convenient scale at the top (done at bottom for simplicity for now) *)
+		r = row;
+		{r, 1} -> "ID",
+		{r, (# - 1) * 8 + 2} -> messageSpaceButton[StringTemplate["Byte #``"][#], "Appearance" -> "Frameless"] & /@ (Range[4]),
+	
+	
+	(* Equivalent, but one might be faster? *)
+		r = row;
+		{r, 1} -> SpanFromAbove,
+		{r, # + 1} -> messageSpaceButton[Replace[Mod[#, 8], 0 -> 8], "Appearance" -> "Frameless"] & /@ Range[4 * 8],
+		
+		r = row;
+		{r, 1} -> SpanFromAbove,
+		{r, # + 1} -> messageSpaceButton[#, "Appearance" -> "Frameless"] & /@ Range[4 * 8]
+	}
+];
+
+
+plotMessages[] := Module[{r},
+	Flatten @ {
+		r = row;
+		addBit[r, 0, "0x002"],
+		addBit[r, 1, "AAA", Print["a"];, "AAAA"],
+		addBit[r, 4, "B", Print["b"];, "BBB"],
+		
+		r = row;
+		addBit[r, 0, "0x152"],
+		addByte[r, 2, 0, "CCC"],
+		addByte[r, 1, 0, "DDD"]
+	}
+];
+
+
+Attributes[addBit] = {HoldRest};
+addBit[r_Integer?Positive, colPosition_Integer, buttonArguments__] := Block[
+	{colCount = colPosition + 1, extraOptions},
+	extraOptions = If[colPosition === 0,
+		{"Appearance" -> "Frameless"},
+		{}
+	];
+	{
+		{r, col} -> messageSpaceButton[buttonArguments, Evaluate[Sequence @@ extraOptions]],
+		If[colCount < 33,
+			{r, col} -> "",
+			{}
+		]
+	}
+];
+
+Attributes[addByte] = {HoldRest};
+addByte[r_Integer?Positive, bytePosition_Integer, byteOffset_Integer, buttonArguments__, opts: OptionsPattern[]] := Block[
+	{colCount = (8 * (bytePosition - 1)) + byteOffset + 1 + 1},
+	{
+		{r, col} -> messageSpaceButton[buttonArguments, opts],
+		If[colCount + 7 < 33,
+			{r, colCount + 7} -> "",
+			{}
+		]
+	}
+];
+
+Attributes[messageSpaceButton] = {HoldRest};
+Options[messageSpaceButton] = {
+	"Appearance" -> Automatic
+};
+messageSpaceButton[label_, action_: Null, opts: OptionsPattern[]] := Button[label, action, "Appearance" -> OptionValue["Appearance"], opts];
+messageSpaceButton[label_, action_: Null, tooltip: Except[_Rule], opts:OptionsPattern[]] := Tooltip[messageSpaceButton[label, action, opts], tooltip];
 
 
 End[];

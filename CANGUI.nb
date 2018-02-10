@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       161,          7]
-NotebookDataLength[     30554,        593]
-NotebookOptionsPosition[     29656,        568]
-NotebookOutlinePosition[     30033,        584]
-CellTagsIndexPosition[     29990,        581]
+NotebookDataLength[     31727,        623]
+NotebookOptionsPosition[     30608,        594]
+NotebookOutlinePosition[     30983,        610]
+CellTagsIndexPosition[     30940,        607]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -95,8 +95,9 @@ Cell[BoxData[
               Evaluator -> Automatic, Method -> "Preemptive"], 
              Alignment -> {Center, Center}, ImageSize -> 
              Dynamic[{
-               Automatic, 3.5 CurrentValue["FontCapHeight"]/
-                AbsoluteCurrentValue[Magnification]}]], 
+               Automatic, 
+                3.5 (CurrentValue["FontCapHeight"]/AbsoluteCurrentValue[
+                 Magnification])}]], 
             GraphicsBox[{
               InsetBox[
                BoxData[
@@ -107,15 +108,16 @@ Cell[BoxData[
                    "MUnitExpressions", "SuccessIcon"]], Alignment -> Center, 
                   ImageSize -> 
                   Dynamic[{
-                    Automatic, 3.5 CurrentValue["FontCapHeight"]/
-                    AbsoluteCurrentValue[Magnification]}]], 
-                 TraditionalForm]]]}, PlotRange -> {{0, 1}, {0, 1}}, 
-             Background -> GrayLevel[0.93], Axes -> False, AspectRatio -> 1, 
-             ImageSize -> 
+                    Automatic, 
+                    3.5 (CurrentValue["FontCapHeight"]/AbsoluteCurrentValue[
+                    Magnification])}]], TraditionalForm]]]}, 
+             PlotRange -> {{0, 1}, {0, 1}}, Background -> GrayLevel[0.93], 
+             Axes -> False, AspectRatio -> 1, ImageSize -> 
              Dynamic[{
-               Automatic, 3.5 CurrentValue["FontCapHeight"]/
-                AbsoluteCurrentValue[Magnification]}], Frame -> True, 
-             FrameTicks -> None, FrameStyle -> Directive[
+               Automatic, 
+                3.5 (CurrentValue["FontCapHeight"]/AbsoluteCurrentValue[
+                 Magnification])}], Frame -> True, FrameTicks -> None, 
+             FrameStyle -> Directive[
                Thickness[Tiny], 
                GrayLevel[0.55]]], 
             GridBox[{{
@@ -155,8 +157,9 @@ Cell[BoxData[
               Evaluator -> Automatic, Method -> "Preemptive"], 
              Alignment -> {Center, Center}, ImageSize -> 
              Dynamic[{
-               Automatic, 3.5 CurrentValue["FontCapHeight"]/
-                AbsoluteCurrentValue[Magnification]}]], 
+               Automatic, 
+                3.5 (CurrentValue["FontCapHeight"]/AbsoluteCurrentValue[
+                 Magnification])}]], 
             GraphicsBox[{
               InsetBox[
                BoxData[
@@ -167,15 +170,16 @@ Cell[BoxData[
                    "MUnitExpressions", "SuccessIcon"]], Alignment -> Center, 
                   ImageSize -> 
                   Dynamic[{
-                    Automatic, 3.5 CurrentValue["FontCapHeight"]/
-                    AbsoluteCurrentValue[Magnification]}]], 
-                 TraditionalForm]]]}, PlotRange -> {{0, 1}, {0, 1}}, 
-             Background -> GrayLevel[0.93], Axes -> False, AspectRatio -> 1, 
-             ImageSize -> 
+                    Automatic, 
+                    3.5 (CurrentValue["FontCapHeight"]/AbsoluteCurrentValue[
+                    Magnification])}]], TraditionalForm]]]}, 
+             PlotRange -> {{0, 1}, {0, 1}}, Background -> GrayLevel[0.93], 
+             Axes -> False, AspectRatio -> 1, ImageSize -> 
              Dynamic[{
-               Automatic, 3.5 CurrentValue["FontCapHeight"]/
-                AbsoluteCurrentValue[Magnification]}], Frame -> True, 
-             FrameTicks -> None, FrameStyle -> Directive[
+               Automatic, 
+                3.5 (CurrentValue["FontCapHeight"]/AbsoluteCurrentValue[
+                 Magnification])}], Frame -> True, FrameTicks -> None, 
+             FrameStyle -> Directive[
                Thickness[Tiny], 
                GrayLevel[0.55]]], 
             GridBox[{{
@@ -548,7 +552,7 @@ Rq5Grk6uTq5BrkHuWH+p+L6q
   Selectable->False]], "Output",ExpressionUUID->"0fc5cc87-0e96-456e-9a6c-\
 9bdaa16963fc"]
 }, Open  ]]
-}, Open  ]],
+}, Closed]],
 
 Cell[CellGroupData[{
 
@@ -564,10 +568,32 @@ ID->"8261572d-80f9-4322-8119-a9da2c4bcb1b"],
 
 Cell[BoxData[
  RowBox[{"CANGUI", "[", "]"}]], "Input",ExpressionUUID->"d70225c1-1b71-4a47-9446-880882f14609"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["MessageSpacePlot work", "Section",ExpressionUUID->"990d480e-8e57-47c4-8307-3a48beb30425"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"SetDirectory", "[", 
+   RowBox[{"NotebookDirectory", "[", "]"}], "]"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Get", "[", "\"\<CANGUI/CANGUI.wl\>\"", "]"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"CANMessageSpacePlot", "[", "]"}]}], "Input",
+ CellChangeTimes->{{3.7249509867152424`*^9, 3.724951003958083*^9}, {
+  3.7249512372662687`*^9, 3.7249512428011436`*^9}, {3.724951880832773*^9, 
+  3.7249518905126495`*^9}, {3.724952539084097*^9, 3.724952542154911*^9}, {
+  3.724952582792346*^9, 3.7249525902467556`*^9}, {3.7249545894354453`*^9, 
+  3.7249545925868073`*^9}, {3.727291027294895*^9, 
+  3.7272910392313356`*^9}},ExpressionUUID->"ff1c5411-0fea-4ef1-a746-\
+b98ef50f763c"]
 }, Open  ]]
 },
-WindowSize->{1920, 997},
-WindowMargins->{{-8, Automatic}, {Automatic, -8}},
+WindowSize->{958, 988},
+WindowMargins->{{Automatic, -7}, {Automatic, 0}},
 TrackCellChangeTimes->False,
 FrontEndVersion->"11.2 for Microsoft Windows (64-bit) (September 11, 2017)",
 StyleDefinitions->"Default.nb"
@@ -587,13 +613,17 @@ Cell[CellGroupData[{
 Cell[583, 22, 83, 0, 67, "Section",ExpressionUUID->"5e55feff-970e-480b-841d-c809f292a6fe"],
 Cell[CellGroupData[{
 Cell[691, 26, 2047, 53, 295, "Input",ExpressionUUID->"229eca7b-1951-4b44-a711-049a5709c3af"],
-Cell[2741, 81, 26388, 467, 71, "Output",ExpressionUUID->"0fc5cc87-0e96-456e-9a6c-9bdaa16963fc"]
+Cell[2741, 81, 26478, 471, 71, "Output",ExpressionUUID->"0fc5cc87-0e96-456e-9a6c-9bdaa16963fc"]
 }, Open  ]]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[29268, 558, 82, 0, 53, "Section",ExpressionUUID->"e0585df1-3fda-451b-83c3-6991ba212496"],
+Cell[29353, 560, 265, 6, 48, "Input",ExpressionUUID->"8261572d-80f9-4322-8119-a9da2c4bcb1b"],
+Cell[29621, 568, 109, 1, 28, "Input",ExpressionUUID->"d70225c1-1b71-4a47-9446-880882f14609"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[29178, 554, 82, 0, 67, "Section",ExpressionUUID->"e0585df1-3fda-451b-83c3-6991ba212496"],
-Cell[29263, 556, 265, 6, 48, "Input",ExpressionUUID->"8261572d-80f9-4322-8119-a9da2c4bcb1b"],
-Cell[29531, 564, 109, 1, 28, "Input",ExpressionUUID->"d70225c1-1b71-4a47-9446-880882f14609"]
+Cell[29767, 574, 95, 0, 67, "Section",ExpressionUUID->"990d480e-8e57-47c4-8307-3a48beb30425"],
+Cell[29865, 576, 727, 15, 67, "Input",ExpressionUUID->"ff1c5411-0fea-4ef1-a746-b98ef50f763c"]
 }, Open  ]]
 }
 ]
