@@ -1,0 +1,601 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='WolframDesktop 11.2' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       161,          7]
+NotebookDataLength[     30554,        593]
+NotebookOptionsPosition[     29656,        568]
+NotebookOutlinePosition[     30033,        584]
+CellTagsIndexPosition[     29990,        581]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Run Tests", "Section",ExpressionUUID->"5e55feff-970e-480b-841d-c809f292a6fe"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"SetDirectory", "[", 
+   RowBox[{"NotebookDirectory", "[", "]"}], "]"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"tro", "=", 
+   RowBox[{"TestReport", "[", "\"\<Tests/CANGUI.wlt\>\"", "]"}]}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"failures", "=", 
+   RowBox[{"Flatten", "[", 
+    RowBox[{"Values", "/@", 
+     RowBox[{"Values", "[", 
+      RowBox[{"tro", "[", "\"\<TestsFailed\>\"", "]"}], "]"}]}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"If", "[", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"Length", "[", "failures", "]"}], ">", "0"}], ",", 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"badKeys", "=", 
+     RowBox[{"{", 
+      RowBox[{
+      "\"\<TestIndex\>\"", ",", "\"\<AbsoluteTimeUsed\>\"", ",", 
+       "\"\<CPUTimeUsed\>\"", ",", "\"\<MemoryUsed\>\"", ",", 
+       "\"\<Outcome\>\""}], "}"}]}], ";", "\[IndentingNewLine]", 
+    RowBox[{"Grid", "[", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"Prepend", "[", "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{
+         RowBox[{
+          RowBox[{"Values", "[", 
+           RowBox[{"KeyDrop", "[", 
+            RowBox[{
+             RowBox[{"First", "[", "#", "]"}], ",", "badKeys"}], "]"}], "]"}],
+           "&"}], "/@", "failures"}], ",", "\[IndentingNewLine]", 
+        RowBox[{"Keys", "[", 
+         RowBox[{"KeyDrop", "[", 
+          RowBox[{
+           RowBox[{"failures", "[", 
+            RowBox[{"[", 
+             RowBox[{"1", ",", "1"}], "]"}], "]"}], ",", "badKeys"}], "]"}], 
+         "]"}]}], "\[IndentingNewLine]", "]"}], ",", "\[IndentingNewLine]", 
+      RowBox[{"Frame", "\[Rule]", "All"}], ",", "\[IndentingNewLine]", 
+      RowBox[{"Background", "\[Rule]", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"{", "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"LightGray", ",", "White"}], "}"}]}], "}"}]}]}], 
+     "\[IndentingNewLine]", "]"}]}]}], "\[IndentingNewLine]", "]"}]}], "Input",ExpressionUUID->"229eca7b-1951-4b44-a711-049a5709c3af"],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{
+   TagBox["TestReportObject",
+    "SummaryHead"], "[", 
+   DynamicModuleBox[{Typeset`open$$ = False, Typeset`embedState$$ = "Ready"}, 
+    TemplateBox[{PaneSelectorBox[{False -> GridBox[{{
+            PaneBox[
+             ButtonBox[
+              DynamicBox[
+               FEPrivate`FrontEndResource[
+               "FEBitmaps", "SquarePlusIconMedium"]], 
+              ButtonFunction :> (Typeset`open$$ = True), Appearance -> None, 
+              Evaluator -> Automatic, Method -> "Preemptive"], 
+             Alignment -> {Center, Center}, ImageSize -> 
+             Dynamic[{
+               Automatic, 3.5 CurrentValue["FontCapHeight"]/
+                AbsoluteCurrentValue[Magnification]}]], 
+            GraphicsBox[{
+              InsetBox[
+               BoxData[
+                FormBox[
+                 PaneBox[
+                  DynamicBox[
+                   FEPrivate`FrontEndResource[
+                   "MUnitExpressions", "SuccessIcon"]], Alignment -> Center, 
+                  ImageSize -> 
+                  Dynamic[{
+                    Automatic, 3.5 CurrentValue["FontCapHeight"]/
+                    AbsoluteCurrentValue[Magnification]}]], 
+                 TraditionalForm]]]}, PlotRange -> {{0, 1}, {0, 1}}, 
+             Background -> GrayLevel[0.93], Axes -> False, AspectRatio -> 1, 
+             ImageSize -> 
+             Dynamic[{
+               Automatic, 3.5 CurrentValue["FontCapHeight"]/
+                AbsoluteCurrentValue[Magnification]}], Frame -> True, 
+             FrameTicks -> None, FrameStyle -> Directive[
+               Thickness[Tiny], 
+               GrayLevel[0.55]]], 
+            GridBox[{{
+               RowBox[{
+                 TagBox["\"Title: \"", "SummaryItemAnnotation"], 
+                 "\[InvisibleSpace]", 
+                 TagBox["\"Test Report: CANGUI.wlt\"", "SummaryItem"]}], 
+               "\[SpanFromLeft]"}, {
+               RowBox[{
+                 TagBox["\"Success rate: \"", "SummaryItemAnnotation"], 
+                 "\[InvisibleSpace]", 
+                 TagBox[
+                  TemplateBox[{"100", "\"%\""}, "RowDefault"], 
+                  "SummaryItem"]}], 
+               RowBox[{
+                 TagBox["\"Tests run: \"", "SummaryItemAnnotation"], 
+                 "\[InvisibleSpace]", 
+                 TagBox["9", "SummaryItem"]}]}}, 
+             GridBoxAlignment -> {
+              "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, AutoDelete -> 
+             False, GridBoxItemSize -> {
+              "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
+             GridBoxSpacings -> {"Columns" -> {{2}}, "Rows" -> {{Automatic}}},
+              BaseStyle -> {
+              ShowStringCharacters -> False, NumberMarks -> False, 
+               PrintPrecision -> 3, ShowSyntaxStyles -> False}]}}, 
+          GridBoxAlignment -> {"Rows" -> {{Top}}}, AutoDelete -> False, 
+          GridBoxItemSize -> {
+           "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
+          BaselinePosition -> {1, 1}], True -> GridBox[{{
+            PaneBox[
+             ButtonBox[
+              DynamicBox[
+               FEPrivate`FrontEndResource[
+               "FEBitmaps", "SquareMinusIconMedium"]], 
+              ButtonFunction :> (Typeset`open$$ = False), Appearance -> None, 
+              Evaluator -> Automatic, Method -> "Preemptive"], 
+             Alignment -> {Center, Center}, ImageSize -> 
+             Dynamic[{
+               Automatic, 3.5 CurrentValue["FontCapHeight"]/
+                AbsoluteCurrentValue[Magnification]}]], 
+            GraphicsBox[{
+              InsetBox[
+               BoxData[
+                FormBox[
+                 PaneBox[
+                  DynamicBox[
+                   FEPrivate`FrontEndResource[
+                   "MUnitExpressions", "SuccessIcon"]], Alignment -> Center, 
+                  ImageSize -> 
+                  Dynamic[{
+                    Automatic, 3.5 CurrentValue["FontCapHeight"]/
+                    AbsoluteCurrentValue[Magnification]}]], 
+                 TraditionalForm]]]}, PlotRange -> {{0, 1}, {0, 1}}, 
+             Background -> GrayLevel[0.93], Axes -> False, AspectRatio -> 1, 
+             ImageSize -> 
+             Dynamic[{
+               Automatic, 3.5 CurrentValue["FontCapHeight"]/
+                AbsoluteCurrentValue[Magnification]}], Frame -> True, 
+             FrameTicks -> None, FrameStyle -> Directive[
+               Thickness[Tiny], 
+               GrayLevel[0.55]]], 
+            GridBox[{{
+               RowBox[{
+                 TagBox["\"Title: \"", "SummaryItemAnnotation"], 
+                 "\[InvisibleSpace]", 
+                 TagBox["\"Test Report: CANGUI.wlt\"", "SummaryItem"]}], 
+               "\[SpanFromLeft]"}, {
+               RowBox[{
+                 TagBox["\"Success rate: \"", "SummaryItemAnnotation"], 
+                 "\[InvisibleSpace]", 
+                 TagBox[
+                  TemplateBox[{"100", "\"%\""}, "RowDefault"], 
+                  "SummaryItem"]}], 
+               RowBox[{
+                 TagBox["\"Tests run: \"", "SummaryItemAnnotation"], 
+                 "\[InvisibleSpace]", 
+                 TagBox["9", "SummaryItem"]}]}, {
+               RowBox[{
+                 TagBox["\"Succeeded: \"", "SummaryItemAnnotation"], 
+                 "\[InvisibleSpace]", 
+                 TagBox["9", "SummaryItem"]}], "\[SpanFromLeft]"}, {
+               RowBox[{
+                 TagBox["\"Failed: \"", "SummaryItemAnnotation"], 
+                 "\[InvisibleSpace]", 
+                 TagBox["0", "SummaryItem"]}], "\[SpanFromLeft]"}, {
+               RowBox[{
+                 TagBox[
+                 "\"Failed with wrong results: \"", "SummaryItemAnnotation"], 
+                 "\[InvisibleSpace]", 
+                 TagBox["0", "SummaryItem"]}], "\[SpanFromLeft]"}, {
+               RowBox[{
+                 TagBox[
+                 "\"Failed with messages: \"", "SummaryItemAnnotation"], 
+                 "\[InvisibleSpace]", 
+                 TagBox["0", "SummaryItem"]}], "\[SpanFromLeft]"}, {
+               RowBox[{
+                 TagBox["\"Failed with errors: \"", "SummaryItemAnnotation"], 
+                 "\[InvisibleSpace]", 
+                 TagBox["0", "SummaryItem"]}], "\[SpanFromLeft]"}}, 
+             GridBoxAlignment -> {
+              "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, AutoDelete -> 
+             False, GridBoxItemSize -> {
+              "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
+             GridBoxSpacings -> {"Columns" -> {{2}}, "Rows" -> {{Automatic}}},
+              BaseStyle -> {
+              ShowStringCharacters -> False, NumberMarks -> False, 
+               PrintPrecision -> 3, ShowSyntaxStyles -> False}]}}, 
+          GridBoxAlignment -> {"Rows" -> {{Top}}}, AutoDelete -> False, 
+          GridBoxItemSize -> {
+           "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
+          BaselinePosition -> {1, 1}]}, 
+       Dynamic[Typeset`open$$], ImageSize -> Automatic]},
+     "SummaryPanel",
+     DisplayFunction->(
+      ButtonBox[#, Active -> False, Alignment -> Left, 
+       Appearance -> {
+        "Default" -> 
+         FrontEnd`FileName[{"Typeset", "SummaryBox"}, "Panel.9.png"]}, 
+       FrameMargins -> 7, BaseStyle -> {}, 
+       DefaultBaseStyle -> {"Panel", Background -> None}, BaselinePosition -> 
+       Baseline]& )],
+    DynamicModuleValues:>{}], "]"}],
+  TestReportObject[
+   Association[
+   "Title" -> "Test Report: CANGUI.wlt", "TimeElapsed" -> 
+    Quantity[0.65, "Seconds"], "TestsSucceededCount" -> 9, "TestsFailedCount" -> 
+    0, "TestsFailedWrongResultsCount" -> 0, "TestsFailedWithMessagesCount" -> 
+    0, "TestsFailedWithErrorsCount" -> 0, "Aborted" -> False, "TestResults" -> 
+    Association[1 -> TestResultObject[
+        Association[
+        "TestIndex" -> 1, "TestID" -> "a9a06ee2-536b-48f7-8d8a-abfc33264322", 
+         "Outcome" -> "Success", "Input" -> HoldForm[
+           Get["CANGUI`"]], "ExpectedOutput" -> HoldForm[Null], 
+         "ActualOutput" -> HoldForm[Null], "ExpectedMessages" -> {}, 
+         "ActualMessages" -> {}, "AbsoluteTimeUsed" -> 
+         Quantity[0.0310233`5.642202990392847, "Seconds"], "CPUTimeUsed" -> 
+         Quantity[0.03100000000000236, "Seconds"], "MemoryUsed" -> 
+         Quantity[-2704, "Bytes"]]], 2 -> TestResultObject[
+        Association[
+        "TestIndex" -> 2, "TestID" -> "f9d246a8-d529-4833-a655-84a208eaeb82", 
+         "Outcome" -> "Success", "Input" -> HoldForm[
+           CANGUI`Private`getDuration["DataFiles\\04021105.DAT"]], 
+         "ExpectedOutput" -> HoldForm[
+           Quantity[44, "Seconds"]], "ActualOutput" -> HoldForm[
+           Quantity[44, "Seconds"]], "ExpectedMessages" -> {}, 
+         "ActualMessages" -> {}, "AbsoluteTimeUsed" -> 
+         Quantity[0.0020019`4.4519573774024215, "Seconds"], "CPUTimeUsed" -> 
+         Quantity[0., "Seconds"], "MemoryUsed" -> Quantity[880, "Bytes"]]], 3 -> 
+      TestResultObject[
+        Association[
+        "TestIndex" -> 3, "TestID" -> "c12f07f7-dd10-4df8-b825-98e1277c4fd8", 
+         "Outcome" -> "Success", "Input" -> HoldForm[
+           CANGUI`Private`getCANMetadata["DataFiles\\04021105.DAT"]], 
+         "ExpectedOutput" -> HoldForm[
+           Association[
+           "Date" -> DateObject[{2017, 4, 2}, "Day", "Gregorian", -6.], 
+            "StartTime" -> TimeObject[{11, 5}, TimeZone -> -6.], "EndTime" -> 
+            TimeObject[{11, 6, 0.}, TimeZone -> -6.], "Duration" -> 
+            Quantity[44, "Seconds"]]], "ActualOutput" -> HoldForm[
+           Association[
+           "Date" -> DateObject[{2017, 4, 2}, "Day", "Gregorian", -6.], 
+            "StartTime" -> TimeObject[{11, 5}, TimeZone -> -6.], "EndTime" -> 
+            TimeObject[{11, 6, 0.}, TimeZone -> -6.], "Duration" -> 
+            Quantity[44, "Seconds"]]], "ExpectedMessages" -> {}, 
+         "ActualMessages" -> {}, "AbsoluteTimeUsed" -> 
+         Quantity[0.0040165`4.754362769131411, "Seconds"], "CPUTimeUsed" -> 
+         Quantity[0., "Seconds"], "MemoryUsed" -> Quantity[2256, "Bytes"]]], 
+      4 -> TestResultObject[
+        Association[
+        "TestIndex" -> 4, "TestID" -> "b09784e4-9168-4092-bc58-1f3dfd017d08", 
+         "Outcome" -> "Success", "Input" -> HoldForm[
+           CANGUI`Private`populateCANFileMetadata["DataFiles_Smaller"]], 
+         "ExpectedOutput" -> HoldForm[
+           Association[
+           "DataFiles_Smaller\\09011611.DAT" -> 
+            Association[
+             "Date" -> DateObject[{2017, 9, 1}, "Day", "Gregorian", -6.], 
+              "StartTime" -> TimeObject[{16, 11}, TimeZone -> -6.], "EndTime" -> 
+              TimeObject[{16, 20, 0.}, TimeZone -> -6.], "Duration" -> 
+              Quantity[567, "Seconds"]], "DataFiles_Smaller\\09011530.DAT" -> 
+            Association[
+             "Date" -> DateObject[{2017, 9, 1}, "Day", "Gregorian", -6.], 
+              "StartTime" -> TimeObject[{15, 30}, TimeZone -> -6.], "EndTime" -> 
+              TimeObject[{15, 34, 0.}, TimeZone -> -6.], "Duration" -> 
+              Quantity[256, "Seconds"]], "DataFiles_Smaller\\09011515.DAT" -> 
+            Association[
+             "Date" -> DateObject[{2017, 9, 1}, "Day", "Gregorian", -6.], 
+              "StartTime" -> TimeObject[{15, 15}, TimeZone -> -6.], "EndTime" -> 
+              TimeObject[{15, 23, 0.}, TimeZone -> -6.], "Duration" -> 
+              Quantity[486, "Seconds"]], "DataFiles_Smaller\\08311753.DAT" -> 
+            Association[
+             "Date" -> DateObject[{2017, 8, 31}, "Day", "Gregorian", -6.], 
+              "StartTime" -> TimeObject[{17, 53}, TimeZone -> -6.], "EndTime" -> 
+              TimeObject[{18, 0, 0.}, TimeZone -> -6.], "Duration" -> 
+              Quantity[442, "Seconds"]], "DataFiles_Smaller\\08310927.DAT" -> 
+            Association[
+             "Date" -> DateObject[{2017, 8, 31}, "Day", "Gregorian", -6.], 
+              "StartTime" -> TimeObject[{9, 27}, TimeZone -> -6.], "EndTime" -> 
+              TimeObject[{9, 35, 0.}, TimeZone -> -6.], "Duration" -> 
+              Quantity[456, "Seconds"]], "DataFiles_Smaller\\08301742.DAT" -> 
+            Association[
+             "Date" -> DateObject[{2017, 8, 30}, "Day", "Gregorian", -6.], 
+              "StartTime" -> TimeObject[{17, 42}, TimeZone -> -6.], "EndTime" -> 
+              TimeObject[{17, 45, 0.}, TimeZone -> -6.], "Duration" -> 
+              Quantity[183, "Seconds"]], "DataFiles_Smaller\\08301729.DAT" -> 
+            Association[
+             "Date" -> DateObject[{2017, 8, 30}, "Day", "Gregorian", -6.], 
+              "StartTime" -> TimeObject[{17, 29}, TimeZone -> -6.], "EndTime" -> 
+              TimeObject[{17, 36, 0.}, TimeZone -> -6.], "Duration" -> 
+              Quantity[431, "Seconds"]], "DataFiles_Smaller\\08300854.DAT" -> 
+            Association[
+             "Date" -> DateObject[{2017, 8, 30}, "Day", "Gregorian", -6.], 
+              "StartTime" -> TimeObject[{8, 54}, TimeZone -> -6.], "EndTime" -> 
+              TimeObject[{9, 1, 0.}, TimeZone -> -6.], "Duration" -> 
+              Quantity[448, "Seconds"]], "DataFiles_Smaller\\08291919.DAT" -> 
+            Association[
+             "Date" -> DateObject[{2017, 8, 29}, "Day", "Gregorian", -6.], 
+              "StartTime" -> TimeObject[{19, 19}, TimeZone -> -6.], "EndTime" -> 
+              TimeObject[{19, 29, 0.}, TimeZone -> -6.], "Duration" -> 
+              Quantity[611, "Seconds"]], "DataFiles_Smaller\\08291906.DAT" -> 
+            Association[
+             "Date" -> DateObject[{2017, 8, 29}, "Day", "Gregorian", -6.], 
+              "StartTime" -> TimeObject[{19, 6}, TimeZone -> -6.], "EndTime" -> 
+              TimeObject[{19, 14, 0.}, TimeZone -> -6.], "Duration" -> 
+              Quantity[482, "Seconds"]], "DataFiles_Smaller\\08291826.DAT" -> 
+            Association[
+             "Date" -> DateObject[{2017, 8, 29}, "Day", "Gregorian", -6.], 
+              "StartTime" -> TimeObject[{18, 26}, TimeZone -> -6.], "EndTime" -> 
+              TimeObject[{18, 32, 0.}, TimeZone -> -6.], "Duration" -> 
+              Quantity[385, "Seconds"]], "DataFiles_Smaller\\08290926.DAT" -> 
+            Association[
+             "Date" -> DateObject[{2017, 8, 29}, "Day", "Gregorian", -6.], 
+              "StartTime" -> TimeObject[{9, 26}, TimeZone -> -6.], "EndTime" -> 
+              TimeObject[{9, 31, 0.}, TimeZone -> -6.], "Duration" -> 
+              Quantity[295, "Seconds"]], "DataFiles_Smaller\\08290925.DAT" -> 
+            Association[
+             "Date" -> DateObject[{2017, 8, 29}, "Day", "Gregorian", -6.], 
+              "StartTime" -> TimeObject[{9, 25}, TimeZone -> -6.], "EndTime" -> 
+              TimeObject[{9, 26, 0.}, TimeZone -> -6.], "Duration" -> 
+              Quantity[61, "Seconds"]], "DataFiles_Smaller\\08281746.DAT" -> 
+            Association[
+             "Date" -> DateObject[{2017, 8, 28}, "Day", "Gregorian", -6.], 
+              "StartTime" -> TimeObject[{17, 46}, TimeZone -> -6.], "EndTime" -> 
+              TimeObject[{17, 54, 0.}, TimeZone -> -6.], "Duration" -> 
+              Quantity[505, "Seconds"]], "DataFiles_Smaller\\08280932.DAT" -> 
+            Association[
+             "Date" -> DateObject[{2017, 8, 28}, "Day", "Gregorian", -6.], 
+              "StartTime" -> TimeObject[{9, 32}, TimeZone -> -6.], "EndTime" -> 
+              TimeObject[{9, 39, 0.}, TimeZone -> -6.], "Duration" -> 
+              Quantity[441, "Seconds"]]]], "ActualOutput" -> HoldForm[
+           Association[
+           "DataFiles_Smaller\\09011611.DAT" -> 
+            Association[
+             "Date" -> DateObject[{2017, 9, 1}, "Day", "Gregorian", -6.], 
+              "StartTime" -> TimeObject[{16, 11}, TimeZone -> -6.], "EndTime" -> 
+              TimeObject[{16, 20, 0.}, TimeZone -> -6.], "Duration" -> 
+              Quantity[567, "Seconds"]], "DataFiles_Smaller\\09011530.DAT" -> 
+            Association[
+             "Date" -> DateObject[{2017, 9, 1}, "Day", "Gregorian", -6.], 
+              "StartTime" -> TimeObject[{15, 30}, TimeZone -> -6.], "EndTime" -> 
+              TimeObject[{15, 34, 0.}, TimeZone -> -6.], "Duration" -> 
+              Quantity[256, "Seconds"]], "DataFiles_Smaller\\09011515.DAT" -> 
+            Association[
+             "Date" -> DateObject[{2017, 9, 1}, "Day", "Gregorian", -6.], 
+              "StartTime" -> TimeObject[{15, 15}, TimeZone -> -6.], "EndTime" -> 
+              TimeObject[{15, 23, 0.}, TimeZone -> -6.], "Duration" -> 
+              Quantity[486, "Seconds"]], "DataFiles_Smaller\\08311753.DAT" -> 
+            Association[
+             "Date" -> DateObject[{2017, 8, 31}, "Day", "Gregorian", -6.], 
+              "StartTime" -> TimeObject[{17, 53}, TimeZone -> -6.], "EndTime" -> 
+              TimeObject[{18, 0, 0.}, TimeZone -> -6.], "Duration" -> 
+              Quantity[442, "Seconds"]], "DataFiles_Smaller\\08310927.DAT" -> 
+            Association[
+             "Date" -> DateObject[{2017, 8, 31}, "Day", "Gregorian", -6.], 
+              "StartTime" -> TimeObject[{9, 27}, TimeZone -> -6.], "EndTime" -> 
+              TimeObject[{9, 35, 0.}, TimeZone -> -6.], "Duration" -> 
+              Quantity[456, "Seconds"]], "DataFiles_Smaller\\08301742.DAT" -> 
+            Association[
+             "Date" -> DateObject[{2017, 8, 30}, "Day", "Gregorian", -6.], 
+              "StartTime" -> TimeObject[{17, 42}, TimeZone -> -6.], "EndTime" -> 
+              TimeObject[{17, 45, 0.}, TimeZone -> -6.], "Duration" -> 
+              Quantity[183, "Seconds"]], "DataFiles_Smaller\\08301729.DAT" -> 
+            Association[
+             "Date" -> DateObject[{2017, 8, 30}, "Day", "Gregorian", -6.], 
+              "StartTime" -> TimeObject[{17, 29}, TimeZone -> -6.], "EndTime" -> 
+              TimeObject[{17, 36, 0.}, TimeZone -> -6.], "Duration" -> 
+              Quantity[431, "Seconds"]], "DataFiles_Smaller\\08300854.DAT" -> 
+            Association[
+             "Date" -> DateObject[{2017, 8, 30}, "Day", "Gregorian", -6.], 
+              "StartTime" -> TimeObject[{8, 54}, TimeZone -> -6.], "EndTime" -> 
+              TimeObject[{9, 1, 0.}, TimeZone -> -6.], "Duration" -> 
+              Quantity[448, "Seconds"]], "DataFiles_Smaller\\08291919.DAT" -> 
+            Association[
+             "Date" -> DateObject[{2017, 8, 29}, "Day", "Gregorian", -6.], 
+              "StartTime" -> TimeObject[{19, 19}, TimeZone -> -6.], "EndTime" -> 
+              TimeObject[{19, 29, 0.}, TimeZone -> -6.], "Duration" -> 
+              Quantity[611, "Seconds"]], "DataFiles_Smaller\\08291906.DAT" -> 
+            Association[
+             "Date" -> DateObject[{2017, 8, 29}, "Day", "Gregorian", -6.], 
+              "StartTime" -> TimeObject[{19, 6}, TimeZone -> -6.], "EndTime" -> 
+              TimeObject[{19, 14, 0.}, TimeZone -> -6.], "Duration" -> 
+              Quantity[482, "Seconds"]], "DataFiles_Smaller\\08291826.DAT" -> 
+            Association[
+             "Date" -> DateObject[{2017, 8, 29}, "Day", "Gregorian", -6.], 
+              "StartTime" -> TimeObject[{18, 26}, TimeZone -> -6.], "EndTime" -> 
+              TimeObject[{18, 32, 0.}, TimeZone -> -6.], "Duration" -> 
+              Quantity[385, "Seconds"]], "DataFiles_Smaller\\08290926.DAT" -> 
+            Association[
+             "Date" -> DateObject[{2017, 8, 29}, "Day", "Gregorian", -6.], 
+              "StartTime" -> TimeObject[{9, 26}, TimeZone -> -6.], "EndTime" -> 
+              TimeObject[{9, 31, 0.}, TimeZone -> -6.], "Duration" -> 
+              Quantity[295, "Seconds"]], "DataFiles_Smaller\\08290925.DAT" -> 
+            Association[
+             "Date" -> DateObject[{2017, 8, 29}, "Day", "Gregorian", -6.], 
+              "StartTime" -> TimeObject[{9, 25}, TimeZone -> -6.], "EndTime" -> 
+              TimeObject[{9, 26, 0.}, TimeZone -> -6.], "Duration" -> 
+              Quantity[61, "Seconds"]], "DataFiles_Smaller\\08281746.DAT" -> 
+            Association[
+             "Date" -> DateObject[{2017, 8, 28}, "Day", "Gregorian", -6.], 
+              "StartTime" -> TimeObject[{17, 46}, TimeZone -> -6.], "EndTime" -> 
+              TimeObject[{17, 54, 0.}, TimeZone -> -6.], "Duration" -> 
+              Quantity[505, "Seconds"]], "DataFiles_Smaller\\08280932.DAT" -> 
+            Association[
+             "Date" -> DateObject[{2017, 8, 28}, "Day", "Gregorian", -6.], 
+              "StartTime" -> TimeObject[{9, 32}, TimeZone -> -6.], "EndTime" -> 
+              TimeObject[{9, 39, 0.}, TimeZone -> -6.], "Duration" -> 
+              Quantity[441, "Seconds"]]]], "ExpectedMessages" -> {}, 
+         "ActualMessages" -> {}, "AbsoluteTimeUsed" -> 
+         Quantity[0.0640476`5.957017858278265, "Seconds"], "CPUTimeUsed" -> 
+         Quantity[0.030999999999998806`, "Seconds"], "MemoryUsed" -> 
+         Quantity[36104, "Bytes"]]], 5 -> TestResultObject[
+        Association[
+        "TestIndex" -> 5, "TestID" -> "d6f25b21-d762-443b-9604-75d1f21a9a4f", 
+         "Outcome" -> "Success", "Input" -> HoldForm[
+           CANGUI`Private`parseRawCANData[CompressedData["
+1:eJy1Vs9vTUEUPvddKn6EVkLkKVVtGrWyICkbffIUO+mihEioNBKRtkgrFhos
+sMOfILHxe2/VjYgVxcYKsbGxF/FS35c5k3veefP0Wpjku3Mz8835Pefe3vGp
+0cmKiOwHVkkYo5nIV8wXpHVsAq7r+2Hw1mLeADwC7gA13VsEluv7cFacP8dz
+Rl4VeACQ8g74qWf9yIHfyqvoGudp1XPF8cn7oO8dwBdgndm/BDSU996sL7bR
+nxk/qO8HcMjsbzZ+fEycT8mz/mZuv2Lsq+FxDPMAsBoYBG4rthl5R/CY03fm
+87HigNNLecdV3oDKOwW8dvLGsla77Nht5J1QWTWV15eQ5+17qvD2+fyuAK46
+3Ske83sjwYt5I+8tMGL2t0iRt8hjvbxJ8Hr/0Y/TebCrQ2NFVHV/jeHFe9QN
+vARuSes9SvnLtcsJf719TxTevrL1Z+2bb2Mf+QvuvLeroetl6oq8ehb0cYwB
+r4DzwENgh9ET87YM+C7NedsqIb8V48d64HNJP9rFZSleVpKX/0d5tp7pt+1X
+PVLExdfLMwn1Ujd8Gz9+A7ok9J9U/MrK+1v9xX5PHvvLSQn9hXbvlPCtsv0v
+pfe56j3o9C5A+BDmXWa94fSTdyYP74O69klCj7kH3JXwDbFx5p3eKM1xpn0x
+zuwHZyX0s9gPuqU4G/XGuqdY9v1U3efS3Hf3aFyo3/bdPBGXFxoXe09yjcu+
+JeJC3iwe1zDvNXFh7juB+xoX8qZzaRmUt9LJs37U1Q/WmM2v540or5rg2fvh
+R7xH5MW88ZvaL+m8kWf/I+al+T/im5F3E8mbwHxU96YU3Ntu7PN9nGszzk6u
+2f+rHknfN/IuujgPq02/pPiX+QPWlY4f
+            "]]], "ExpectedOutput" -> HoldForm[
+           Blank[TemporalData]], "ActualOutput" -> HoldForm[
+           TemporalData[Automatic, {CompressedData["
+1:eJyNVT1rVFEQnfueG1GXjREMIa4xUQmaymIFtdldWeOmkxRRIoIfiCCSrCsq
+Fi5qkdipP2HBRuNHb2UjwcpEbaxUbNKkF0nQGe4Z3mTcFQ8c7nyemfve22Tk
+4uzkTEJEW5hl5mQgqjMrzCX2JfeJ+ZFi7DPFeJXtiRDPqZD5CXoq0JDY+TRq
+SnwCuuIvU+ytoVZjnqpTD1m/zltm7QtprJE5tbAxd4vZSGOsGjI9udODJO4k
+ute55jvbBYr4SZ0h8dPMFvMMk1tpGr6HxBpGs4V+9aX3LewCdUcLee0/C/uI
+qbkELd3lGPMuctOgxWU39xpzJ+zfFJ9LD/yciY9i71HE1E8MexCTs4hYQH/R
+7bGJuaPLvVVnwPTrvEPMg8w8c7PZSXNHzX666zZonsJOel/BM+YV2PLOvmHe
+KmIB/WWjV4XfAD8w3yNWYr5BvEzZu07QO8VcYX5FzrOAvj7Tvwe2oh9z5Hs8
+7HKCGnMc9n7KvrUGtBQPmXXY8q57cfeTpkae9XOc6r+g+Ox7MWccMdlpDjsv
+oH7OaL1DrY1ZyNyXzHmcgjHmK9hfUFOCluRem5zWjxk92XGWmUK3glzVzL3d
+ZR+pl7ufg78P97zDvG/qJDYIzRuU3d3OuNoh5rGAvPZvhb2OewiK0Oo3uRzO
+AexhIXe/Cd31f8z2kLsfZy7CX4Tv4WOdap7+x7yaO2X+CdiPnZbsot/3dor/
+w+ZBi9TYvyg+H/m+B02uiXMXTvmdDsP2p2I3KMhDU5HAD/APMIco+9saMFtP
+/T2qRurmPYKfh5bNPTH7DUNTzh/MvUZXeI/id9JmriGn30Pb+YoS/Q2pHTF+
+ztj2WyyZeo15tp3GGm1E09R4NJ2vevYOqvsHJiaNsA==
+             "], CompressedData["
+1:eJxFz7tOAlEUheEzVy4CltQm2OIjzGo0mdbEksaEcqThLbTiEbDTHhPegsKK
+2gQ7RERERHM2v2Enkz3nm7NWMifXvctu5JwLeDJ3mCub52y/X/g0zx4f/Mzx
+N3yBL/B3fIkv8Q98ha/wT3yNr/EvfINv8G98i2/xH3yH7/Df/19Tpz85b3ac
+xrPhbXvs1DQIZNwPZGsS6MwuhLpr+5dQr/76LNSFBSLd++Mw0r42pjemN6Y3
+oTehN6E3pTelN6W3RG+J3rJO80ErH5Rlq1XRzXRUTEcV2TGv6qnwUJVxcUSu
+Rq5Grk6uTq5BrkHuWH+p+L6q
+             "], 9, {"Discrete", 9}, {"Discrete", 1}, 1, {}}, False, 11.2]], 
+         "ExpectedMessages" -> {}, "ActualMessages" -> {}, "AbsoluteTimeUsed" -> 
+         Quantity[0.001501`4.326895690075258, "Seconds"], "CPUTimeUsed" -> 
+         Quantity[0., "Seconds"], "MemoryUsed" -> Quantity[5840, "Bytes"]]], 
+      6 -> TestResultObject[
+        Association[
+        "TestIndex" -> 6, "TestID" -> "7a0d61d0-2d66-448d-a076-aa8fd1a4722d", 
+         "Outcome" -> "Success", "Input" -> HoldForm[
+           CANGUI`nibbleGet[97, 0]], "ExpectedOutput" -> HoldForm[1], 
+         "ActualOutput" -> HoldForm[1], "ExpectedMessages" -> {}, 
+         "ActualMessages" -> {}, "AbsoluteTimeUsed" -> 
+         Quantity[0``7.150514997831988, "Seconds"], "CPUTimeUsed" -> 
+         Quantity[0., "Seconds"], "MemoryUsed" -> Quantity[40, "Bytes"]]], 7 -> 
+      TestResultObject[
+        Association[
+        "TestIndex" -> 7, "TestID" -> "46abb517-4e7e-4f5b-b6b2-3be6a91bd589", 
+         "Outcome" -> "Success", "Input" -> HoldForm[
+           CANGUI`nibbleGet[97, 1]], "ExpectedOutput" -> HoldForm[6], 
+         "ActualOutput" -> HoldForm[6], "ExpectedMessages" -> {}, 
+         "ActualMessages" -> {}, "AbsoluteTimeUsed" -> 
+         Quantity[0``7.150514997831988, "Seconds"], "CPUTimeUsed" -> 
+         Quantity[0., "Seconds"], "MemoryUsed" -> Quantity[40, "Bytes"]]], 8 -> 
+      TestResultObject[
+        Association[
+        "TestIndex" -> 8, "TestID" -> "5f1b1fca-fd37-4ffe-b6a0-aefa99fc8f72", 
+         "Outcome" -> "Success", "Input" -> HoldForm[
+           Apply[And, 
+            Map[CANGUI`nibbleGet[#, 0] + 16 CANGUI`nibbleGet[#, 1] === #& , 
+             Range[1, 255]]]], "ExpectedOutput" -> HoldForm[True], 
+         "ActualOutput" -> HoldForm[True], "ExpectedMessages" -> {}, 
+         "ActualMessages" -> {}, "AbsoluteTimeUsed" -> 
+         Quantity[0.0014976`4.325910829226017, "Seconds"], "CPUTimeUsed" -> 
+         Quantity[0.01600000000000179, "Seconds"], "MemoryUsed" -> 
+         Quantity[344, "Bytes"]]], 9 -> TestResultObject[
+        Association[
+        "TestIndex" -> 9, "TestID" -> "5ef58d3e-972e-432a-a244-9df740c4c2bf", 
+         "Outcome" -> "Success", "Input" -> HoldForm[
+           
+           With[{$CellContext`nibble = 
+             CANGUI`nibbleGet[97, 1, -1]}, $CellContext`nibble === FromDigits[
+              StringPadLeft[
+               IntegerString[$CellContext`nibble, 2], 4, "0"], 2]]], 
+         "ExpectedOutput" -> HoldForm[True], "ActualOutput" -> HoldForm[True],
+          "ExpectedMessages" -> {}, "ActualMessages" -> {}, 
+         "AbsoluteTimeUsed" -> Quantity[0``7.150514997831988, "Seconds"], 
+         "CPUTimeUsed" -> Quantity[0., "Seconds"], "MemoryUsed" -> 
+         Quantity[40, "Bytes"]]]], 
+    "TestsSucceededIndices" -> {1, 2, 3, 4, 5, 6, 7, 8, 9}, 
+    "TestsFailedIndices" -> {}, "TestsFailedWrongResultsIndices" -> {}, 
+    "TestsFailedWithMessagesIndices" -> {}, 
+    "TestsFailedWithErrorsIndices" -> {}]],
+  Editable->False,
+  SelectWithContents->True,
+  Selectable->False]], "Output",ExpressionUUID->"0fc5cc87-0e96-456e-9a6c-\
+9bdaa16963fc"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Test GUI", "Section",ExpressionUUID->"e0585df1-3fda-451b-83c3-6991ba212496"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"SetDirectory", "[", 
+   RowBox[{"NotebookDirectory", "[", "]"}], "]"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"Get", "[", "\"\<CANGUI/CANGUI.wl\>\"", "]"}]}], "Input",ExpressionUU\
+ID->"8261572d-80f9-4322-8119-a9da2c4bcb1b"],
+
+Cell[BoxData[
+ RowBox[{"CANGUI", "[", "]"}]], "Input",ExpressionUUID->"d70225c1-1b71-4a47-9446-880882f14609"]
+}, Open  ]]
+},
+WindowSize->{1920, 997},
+WindowMargins->{{-8, Automatic}, {Automatic, -8}},
+TrackCellChangeTimes->False,
+FrontEndVersion->"11.2 for Microsoft Windows (64-bit) (September 11, 2017)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[583, 22, 83, 0, 67, "Section",ExpressionUUID->"5e55feff-970e-480b-841d-c809f292a6fe"],
+Cell[CellGroupData[{
+Cell[691, 26, 2047, 53, 295, "Input",ExpressionUUID->"229eca7b-1951-4b44-a711-049a5709c3af"],
+Cell[2741, 81, 26388, 467, 71, "Output",ExpressionUUID->"0fc5cc87-0e96-456e-9a6c-9bdaa16963fc"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[29178, 554, 82, 0, 67, "Section",ExpressionUUID->"e0585df1-3fda-451b-83c3-6991ba212496"],
+Cell[29263, 556, 265, 6, 48, "Input",ExpressionUUID->"8261572d-80f9-4322-8119-a9da2c4bcb1b"],
+Cell[29531, 564, 109, 1, 28, "Input",ExpressionUUID->"d70225c1-1b71-4a47-9446-880882f14609"]
+}, Open  ]]
+}
+]
+*)
+
