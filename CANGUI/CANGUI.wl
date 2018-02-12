@@ -730,6 +730,7 @@ addMessageRow[id_String, bitsAndBytes__] := Module[
 		Cases[{bitsAndBytes}, bit[args__] :> addBit[r, args]]
 	]
 ];
+addMessageRow[___] := {};
 
 Attributes[addBit] = {HoldRest};
 addBit[r_Integer?Positive, colPosition_Integer, buttonArguments__] := Block[
@@ -746,6 +747,7 @@ addBit[r_Integer?Positive, colPosition_Integer, buttonArguments__] := Block[
 		]
 	}
 ];
+addBit[___] := {};
 
 Attributes[addByte] = {HoldRest};
 addByte[r_Integer?Positive, bytePosition_Integer, byteOffset_Integer, buttonArguments__, opts: OptionsPattern[]] := Block[
