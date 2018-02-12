@@ -709,24 +709,45 @@ topScale[] := Module[
 ];
 
 
-plotMessages[] := Module[{r},
-	Flatten @ {
-		addMessageRow["0x002",
-			bit[1, "AAA", Print["a"];, "AAAA"],
-			bit[4, "B", Print["b"];, "BBB"]
+plotMessages[] := Flatten[getMessageRows[plotChoiceImport[]]];
+
+getMessageRows[plotChoices_] := Module[
+	{groupedMessageData},
+	
+	groupedMessageData = GroupBy[
+		plotChoices,
+		#ID & -> KeyDrop["ID"],
+		Map[Join[#, <|"Bytes" -> getBytes[#Function], "Bits" -> getBits[#Function]|>] &]
+	];
+	groupedMessageData = KeyMap[StringTrim[StringSplit[#, ","]] &, groupedMessageData];
+	groupedMessageData = KeyValueMap[
+		Function[{IDs, messages},
+			Table[id -> message, {id, IDs}, {message, messages}]
 		],
-		
-		addMessageRow["0x152",
-			byte[2, 0, "CCC"],
-			byte[1, 0, "DDD"]
-		],
-		
-		addMessageRow["0x140",
-			byte[3, 0, "short", Print["ZZZ"];, "tooltip"],
-			bit[3, "B", Print["QQQ"];, "tooltip #2"]
-		]
-	}
+		groupedMessageData
+	];
+	groupedMessageData = Flatten @ groupedMessageData;
+	groupedMessageData = GroupBy[groupedMessageData, First -> Last];
+	KeyValueMap[processMessage, groupedMessageData]
 ];
+
+getBytes[foo_] := Join[
+	Cases[foo, Slot[byteNumber_Integer] :> fixByteCount[byteNumber], Infinity]
+	(* TODO: Handle SlotSequence *)
+	(*,
+	Cases[foo, SlotSequence[byteNumber_Integer] :> fixByteCount /@ Range[byteNumber, Ceiling[byteNumber, 8]], Infinity]
+	*)
+];
+fixByteCount = Function[# //. x_Integer /; x > $MaxByteCount :> (x - $MaxByteCount)];
+
+getBits[foo_] := Cases[foo, bitGet[Slot[byteNumber_Integer],bitNumber_] :> {(byteNumber - 1)*8 + bitNumber}, Infinity];
+
+processMessage[id_, plotChoices_] := addMessageRow[id, Sequence @@ Flatten[processPlotChoice /@ plotChoices]];
+
+processPlotChoice = {
+	Function[{x}, byte[x, 0, #Name, Print[#Name];, Dataset[#]]] /@ #Bytes,
+	Function[{x}, bit[x, #Name, Print[#Name];, Dataset[#]]] /@ #Bits
+}&;
 
 addMessageRow[id_String, bitsAndBytes__] := Module[
 	{r = row},
