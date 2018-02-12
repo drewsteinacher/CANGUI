@@ -657,7 +657,7 @@ row := rowCount++;
 colCount = 1;
 col := colCount++;
 
-Attributes[byte] = {HoldAllComplete};
+Attributes[byteSequence] = {HoldAllComplete};
 Attributes[bit] = {HoldAllComplete};
 
 CANMessageSpacePlot[] := Module[{sa},
@@ -732,7 +732,7 @@ getMessageRows[plotChoices_] := Module[
 ];
 
 getBytes[foo_] := Join[
-	Cases[foo, Slot[byteNumber_Integer] :> fixByteCount[byteNumber], Infinity]
+	MinMax /@ Split[Sort @ Cases[foo, Slot[byteNumber_Integer] :> fixByteCount[byteNumber], Infinity], Less]
 	(* TODO: Handle SlotSequence *)
 	(*,
 	Cases[foo, SlotSequence[byteNumber_Integer] :> fixByteCount /@ Range[byteNumber, Ceiling[byteNumber, 8]], Infinity]
@@ -745,7 +745,9 @@ getBits[foo_] := Cases[foo, bitGet[Slot[byteNumber_Integer],bitNumber_] :> {(byt
 processMessage[id_, plotChoices_] := addMessageRow[id, Sequence @@ Flatten[processPlotChoice /@ plotChoices]];
 
 processPlotChoice = {
-	Function[{x}, byte[x, 0, #Name, Print[#Name];, Dataset[#]]] /@ #Bytes,
+	Function[{start, end},
+		byteSequence[start, end, #Name, Print[#Name];, Dataset[#]]
+	] @@@ #Bytes,
 	Function[{x}, bit[x, #Name, Print[#Name];, Dataset[#]]] /@ #Bits
 }&;
 
@@ -753,7 +755,7 @@ addMessageRow[id_String, bitsAndBytes__] := Module[
 	{r = row},
 	Join[
 		{addBit[r, 0, id]},
-		Cases[{bitsAndBytes}, byte[args__] :> addByte[r, args]],
+		Cases[{bitsAndBytes}, byteSequence[args__] :> addByteSequence[r, args]],
 		Cases[{bitsAndBytes}, bit[args__] :> addBit[r, args]]
 	]
 ];
@@ -776,13 +778,16 @@ addBit[r_Integer?Positive, colPosition_Integer, buttonArguments__] := Block[
 ];
 addBit[___] := {};
 
-Attributes[addByte] = {HoldRest};
-addByte[r_Integer?Positive, bytePosition_Integer, byteOffset_Integer, buttonArguments__, opts: OptionsPattern[]] := Block[
-	{colCount = (8 * (bytePosition - 1)) + byteOffset + 1 + 1},
+Attributes[addByteSequence] = {HoldRest};
+addByteSequence[r_Integer?Positive, byteStart_Integer, byteEnd_Integer, buttonArguments__, opts: OptionsPattern[]] := Block[
 	{
-		{r, colCount} -> messageSpaceButton[buttonArguments, opts],
-		If[colCount + 8 < ($MaxBitCount + 1),
-			{r, colCount + 8} -> "",
+		colCountStart = (8 * (byteStart - 1)) + 1 + 1,
+		colCountEnd = (8 * (byteEnd - 1)) + 1 + 1
+	},
+	{
+		{r, colCountStart} -> messageSpaceButton[buttonArguments, opts],
+		If[colCountEnd + 8 < ($MaxBitCount + 1),
+			{r, colCountEnd + 8} -> "",
 			{}
 		]
 	}
