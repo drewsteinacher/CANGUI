@@ -680,7 +680,13 @@ CANMessageSpacePlot[] := Module[{sa},
 ];
 
 (* Avoids subsequent messages getting overridden while maintaining order *)
-processMessages[x_] := Reverse @ DeleteDuplicatesBy[Reverse @ Flatten[x], First];
+processMessages[x_] := Module[
+	{flattened, ends, rest},
+	flattened = Flatten[x];
+	ends = Select[flattened, Last[#] === ""&];
+	rest = Select[flattened, Last[#] =!= ""&];
+	Join[rest, ends]
+];
 
 topScale[] := Module[
 	{r},
