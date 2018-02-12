@@ -765,7 +765,7 @@ Attributes[messageSpaceButton] = {HoldRest};
 Options[messageSpaceButton] = {
 	"Appearance" -> Automatic
 };
-messageSpaceButton[label_, action_: Null, opts: OptionsPattern[]] := Button[label, action, "Appearance" -> OptionValue["Appearance"], opts];
+messageSpaceButton[label_, action_: Null, opts: OptionsPattern[]] := Button[label, action, "Appearance" -> OptionValue["Appearance"], FrameMargins -> None, opts];
 messageSpaceButton[label_, action_: Null, tooltip: Except[_Rule], opts:OptionsPattern[]] := Tooltip[messageSpaceButton[label, action, opts], tooltip];
 
 
