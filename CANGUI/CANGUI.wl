@@ -648,6 +648,9 @@ validPlotChoiceQ[plotChoice_Association] := With[{ids = StringTrim @ StringSplit
 ];
 
 
+$MaxByteCount = 8;
+$MaxBitCount = 8 * $MaxByteCount;
+
 rowCount = 1;
 row := rowCount++;
 
@@ -664,7 +667,7 @@ CANMessageSpacePlot[] := Module[{sa},
 			topScale[],
 			plotMessages[]
 		},
-		{rowCount - 1, 33},
+		{rowCount - 1, ($MaxByteCount * 8) + 1},
 		SpanFromLeft
 	];
 	
@@ -679,22 +682,23 @@ CANMessageSpacePlot[] := Module[{sa},
 (* Avoids subsequent messages getting overridden while maintaining order *)
 processMessages[x_] := Reverse @ DeleteDuplicatesBy[Reverse @ Flatten[x], First];
 
-topScale[] := Module[{r},
+topScale[] := Module[
+	{r},
 	Flatten @ {
 	(* Convenient scale at the top (done at bottom for simplicity for now) *)
 		r = row;
 		{r, 1} -> "ID",
-		{r, (# - 1) * 8 + 2} -> messageSpaceButton[StringTemplate["Byte #``"][#], "Appearance" -> "Frameless"] & /@ (Range[4]),
+		{r, (# - 1) * 8 + 2} -> messageSpaceButton[StringTemplate["Byte #``"][#], "Appearance" -> "Frameless"] & /@ (Range[$MaxByteCount]),
 	
 	
 	(* Equivalent, but one might be faster? *)
 		r = row;
 		{r, 1} -> SpanFromAbove,
-		{r, # + 1} -> messageSpaceButton[Replace[Mod[#, 8], 0 -> 8], "Appearance" -> "Frameless"] & /@ Range[4 * 8],
+		{r, # + 1} -> messageSpaceButton[Replace[Mod[#, 8], 0 -> 8], "Appearance" -> "Frameless"] & /@ Range[$MaxByteCount * 8],
 		
 		r = row;
 		{r, 1} -> SpanFromAbove,
-		{r, # + 1} -> messageSpaceButton[#, "Appearance" -> "Frameless"] & /@ Range[4 * 8]
+		{r, # + 1} -> messageSpaceButton[#, "Appearance" -> "Frameless"] & /@ Range[$MaxByteCount * 8]
 	}
 ];
 
@@ -747,9 +751,9 @@ Attributes[addByte] = {HoldRest};
 addByte[r_Integer?Positive, bytePosition_Integer, byteOffset_Integer, buttonArguments__, opts: OptionsPattern[]] := Block[
 	{colCount = (8 * (bytePosition - 1)) + byteOffset + 1 + 1},
 	{
-		{r, col} -> messageSpaceButton[buttonArguments, opts],
-		If[colCount + 7 < 33,
-			{r, colCount + 7} -> "",
+		{r, colCount} -> messageSpaceButton[buttonArguments, opts],
+		If[colCount + 8 < ($MaxBitCount + 1),
+			{r, colCount + 8} -> "",
 			{}
 		]
 	}
