@@ -1,5 +1,7 @@
-BeginPackage["CANGUI`"];
 ClearAll["CANGUI`*"];
+ClearAll["CANGUI`*`*"];
+BeginPackage["CANGUI`"];
+
 
 CANGUI::usage = "CANGUI[] makes a GUI designed to make analyzing CAN data files easy";
 signedInt::usage = "signedInt[bytes: {__Integer} | {__TemporalData}] converts bytes into a signed integer";
@@ -733,7 +735,15 @@ getMessageRows[plotChoices_] := Module[
 ];
 
 getBytes[foo_] := Join[
-	MinMax /@ Split[Sort @ Cases[foo, Slot[byteNumber_Integer] :> fixByteCount[byteNumber], Infinity], Less]
+	MinMax /@ Split[
+		Sort[
+			Complement[
+				Cases[foo, Slot[byteNumber_Integer] :> fixByteCount[byteNumber], Infinity],
+				Cases[foo, bitGet[Slot[byteNumber_Integer], _] :> fixByteCount[byteNumber], Infinity]
+			]
+		],
+		Less
+	]
 	(* TODO: Handle SlotSequence *)
 	(*,
 	Cases[foo, SlotSequence[byteNumber_Integer] :> fixByteCount /@ Range[byteNumber, Ceiling[byteNumber, 8]], Infinity]
@@ -741,7 +751,7 @@ getBytes[foo_] := Join[
 ];
 fixByteCount = Function[# //. x_Integer /; x > $MaxByteCount :> (x - $MaxByteCount)];
 
-getBits[foo_] := Cases[foo, bitGet[Slot[byteNumber_Integer],bitNumber_] :> {(byteNumber - 1)*8 + bitNumber}, Infinity];
+getBits[foo_] := Cases[foo, bitGet[Slot[byteNumber_Integer], bitNumber_] :> {(byteNumber - 1)*8 + bitNumber}, Infinity];
 
 processMessage[id_, plotChoices_] := addMessageRow[id, Sequence @@ Flatten[processPlotChoice /@ plotChoices]];
 
@@ -749,13 +759,14 @@ processPlotChoice = {
 	Function[{start, end},
 		byteSequence[start, end, #Name, Print[#Name];, Dataset[#]]
 	] @@@ #Bytes,
-	Function[{x}, bit[x, #Name, Print[#Name];, Dataset[#]]] /@ #Bits
+	(* TODO: Use a 1-3 character "ShortName" instead of "..." *)
+	Function[{x}, bit[x, "...", Print[#Name];, Dataset[#]]] @@@ #Bits
 }&;
 
 addMessageRow[id_String, bitsAndBytes__] := Module[
 	{r = row},
 	Join[
-		{addBit[r, 0, id]},
+		{addBit[r, -1, id]},
 		Cases[{bitsAndBytes}, byteSequence[args__] :> addByteSequence[r, args]],
 		Cases[{bitsAndBytes}, bit[args__] :> addBit[r, args]]
 	]
@@ -764,20 +775,20 @@ addMessageRow[___] := {};
 
 Attributes[addBit] = {HoldRest};
 addBit[r_Integer?Positive, colPosition_Integer, buttonArguments__] := Block[
-	{colCount = colPosition + 1, extraOptions},
-	extraOptions = If[colPosition === 0,
+	{colCount = colPosition + 2, extraOptions},
+	extraOptions = If[colPosition === -1,
 		{"Appearance" -> "Frameless"},
 		{}
 	];
 	{
-		{r, col} -> messageSpaceButton[buttonArguments, Evaluate[Sequence @@ extraOptions]],
-		If[colCount < 33,
-			{r, col} -> "",
+		{r, colCount} -> messageSpaceButton[buttonArguments, Evaluate[Sequence @@ extraOptions]],
+		If[colCount < ($MaxBitCount + 1),
+			{r, colCount + 1} -> "",
 			{}
 		]
 	}
 ];
-addBit[___] := {};
+addBit[args___] := {};
 
 Attributes[addByteSequence] = {HoldRest};
 addByteSequence[r_Integer?Positive, byteStart_Integer, byteEnd_Integer, buttonArguments__, opts: OptionsPattern[]] := Block[
