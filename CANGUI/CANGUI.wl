@@ -716,7 +716,7 @@ getMessageRows[plotChoices_] := Module[
 	
 	groupedMessageData = GroupBy[
 		plotChoices,
-		#ID & -> KeyDrop["ID"],
+		#ID&,
 		Map[Join[#, <|"Bytes" -> getBytes[#Function], "Bits" -> getBits[#Function]|>] &]
 	];
 	groupedMessageData = KeyMap[StringTrim[StringSplit[#, ","]] &, groupedMessageData];
