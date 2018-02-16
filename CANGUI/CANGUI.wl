@@ -660,6 +660,7 @@ colCount = 1;
 col := colCount++;
 
 Attributes[byteSequence] = {HoldAllComplete};
+Attributes[nibble] = {HoldAllComplete};
 Attributes[bit] = {HoldAllComplete};
 
 CANMessageSpacePlot[] := Module[{sa},
@@ -676,7 +677,8 @@ CANMessageSpacePlot[] := Module[{sa},
 	Grid[
 		Normal[sa],
 		Frame -> All,
-		Alignment -> {Center, Center}
+		Alignment -> {Center, Center},
+		ItemSize -> Full
 	]
 
 ];
@@ -719,7 +721,7 @@ getMessageRows[plotChoices_] := Module[
 	groupedMessageData = GroupBy[
 		plotChoices,
 		#ID&,
-		Map[Join[#, <|"Bytes" -> getBytes[#Function], "Bits" -> getBits[#Function]|>] &]
+		Map[Join[#, <|"Bytes" -> getBytes[#Function], "Nibbles" -> getNibbles[#Function], "Bits" -> getBits[#Function]|>] &]
 	];
 	groupedMessageData = KeyMap[StringTrim[StringSplit[#, ","]] &, groupedMessageData];
 	groupedMessageData = KeyValueMap[
@@ -739,7 +741,7 @@ getBytes[foo_] := Join[
 		Sort[
 			Complement[
 				Cases[foo, Slot[byteNumber_Integer] :> fixByteCount[byteNumber], Infinity],
-				Cases[foo, bitGet[Slot[byteNumber_Integer], _] :> fixByteCount[byteNumber], Infinity]
+				Cases[foo, (bitGet | nibbleGet)[Slot[byteNumber_Integer], _] :> fixByteCount[byteNumber], Infinity]
 			]
 		],
 		Less
@@ -751,6 +753,8 @@ getBytes[foo_] := Join[
 ];
 fixByteCount = Function[# //. x_Integer /; x > $MaxByteCount :> (x - $MaxByteCount)];
 
+getNibbles[foo_] := Cases[foo, nibbleGet[Slot[byteNumber_Integer], nibbleNumber_] :> {(byteNumber - 1) * 8 + nibbleNumber * 4}, Infinity];
+
 getBits[foo_] := Cases[foo, bitGet[Slot[byteNumber_Integer], bitNumber_] :> {(byteNumber - 1)*8 + bitNumber}, Infinity];
 
 processMessage[id_, plotChoices_] := addMessageRow[id, Sequence @@ Flatten[processPlotChoice /@ plotChoices]];
@@ -759,8 +763,12 @@ processPlotChoice = {
 	Function[{start, end},
 		byteSequence[start, end, #Name, Print[#Name];, Dataset[#]]
 	] @@@ #Bytes,
+	
+	Function[{x}, nibble[x, #Name, Print[#Name];, Dataset[#]]] @@@ #Nibbles,
+	
 	(* TODO: Use a 1-3 character "ShortName" instead of "..." *)
 	Function[{x}, bit[x, "...", Print[#Name];, Dataset[#]]] @@@ #Bits
+	
 }&;
 
 addMessageRow[id_String, bitsAndBytes__] := Module[
@@ -768,6 +776,7 @@ addMessageRow[id_String, bitsAndBytes__] := Module[
 	Join[
 		{addBit[r, -1, id]},
 		Cases[{bitsAndBytes}, byteSequence[args__] :> addByteSequence[r, args]],
+		Cases[{bitsAndBytes}, nibble[args__] :> addNibble[r, args]],
 		Cases[{bitsAndBytes}, bit[args__] :> addBit[r, args]]
 	]
 ];
@@ -789,6 +798,23 @@ addBit[r_Integer?Positive, colPosition_Integer, buttonArguments__] := Block[
 	}
 ];
 addBit[args___] := {};
+
+Attributes[addNibble] = {HoldRest};
+addNibble[r_Integer?Positive, colPosition_Integer, buttonArguments__] := Block[
+	{colCount = colPosition + 2, extraOptions},
+	extraOptions = If[colPosition === -1,
+		{"Appearance" -> "Frameless"},
+		{}
+	];
+	{
+		{r, colCount} -> messageSpaceButton[buttonArguments, Evaluate[Sequence @@ extraOptions]],
+		If[colCount + 4 < ($MaxBitCount + 1),
+			{r, colCount + 4} -> "",
+			{}
+		]
+	}
+];
+addNibble[args___] := {};
 
 Attributes[addByteSequence] = {HoldRest};
 addByteSequence[r_Integer?Positive, byteStart_Integer, byteEnd_Integer, buttonArguments__, opts: OptionsPattern[]] := Block[
