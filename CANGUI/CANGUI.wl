@@ -728,6 +728,7 @@ getMessageRows[plotChoices_] := Module[
 	];
 	groupedMessageData = Flatten @ groupedMessageData;
 	groupedMessageData = GroupBy[groupedMessageData, First -> Last];
+	groupedMessageData = KeySortBy[groupedMessageData, FromDigits[#, 16]&];
 	KeyValueMap[processMessage, groupedMessageData]
 ];
 
