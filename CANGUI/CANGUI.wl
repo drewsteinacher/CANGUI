@@ -98,7 +98,7 @@ bitPlot[td_TemporalData, opts: OptionsPattern[bitPlot]] := With[
 
 populateCANFileMetadata[directory_: Directory[]] := With[
 	{
-		files = FileNames[RegularExpression[StringRepeat["\\d", 8] <> ".DAT"], directory],
+		files = FileNames[RegularExpression[StringRepeat["\\d", 8] <> "." <> StringRepeat["\\d", 2]<> "B"], directory],
 		loadingTemplate = StringTemplate["Gathering metadata from `` files (`` Mb total)..."]
 	},
 	
@@ -113,12 +113,12 @@ populateCANFileMetadata[directory_: Directory[]] := With[
 
 getCANMetadata[fileName_String] := With[
 	{
-		fileNameNumbers = ToExpression[ StringJoin @@@ Partition[Characters @ FileBaseName[fileName], 2]]
+		fileNameNumbers = FromDigits /@	StringCases[fileName, Repeated[DigitCharacter, 2]]
 	},
 	With[
 		{
-			date = DateObject @ Prepend[fileNameNumbers[[ ;; 2]], 2017(*DateValue["Year"]*)],
-			startTime = TimeObject @ fileNameNumbers[[-2 ;; ]],
+			date = DateObject @ fileNameNumbers[[ ;; 3]],
+			startTime = TimeObject @ Append[fileNameNumbers[[-2 ;; ]], 0.],
 			duration = getDuration[fileName]
 		},
 		<|
@@ -158,7 +158,7 @@ importDataFiles[files:{__String}] := Association[importDataFiles /@ files];
 importDataFiles[file_String] := With[
 	{
 		rawBinaryData = BinaryReadList[file, binaryFileFormat],
-		startTime = TimeObject @ ToExpression[StringJoin @@@ Partition[Characters @ StringTake[FileBaseName[file], {5, -1}], 2]]
+		startTime = TimeObject[Append[FromDigits /@ StringCases[file, Repeated[DigitCharacter, 2]][[-2 ;; ]], 0.]]
 	},
 	
 	Rule[
@@ -301,12 +301,12 @@ tripSelectionMenu[Dynamic[metadata_], Dynamic[startTime_], Dynamic[endTime_], Dy
 			List @ {
 				SetterBar[
 					Dynamic[startTime],
-					Reverse @ Values[Select[metadata, #Date == dateChoice &][[All, "StartTime"]]],
+					Reverse @ Values[Select[metadata, #Date === dateChoice &][[All, "StartTime"]]],
 					Appearance -> "Vertical"
 				],
 				SetterBar[
 					Dynamic[endTime],
-					Reverse @ Values[Select[metadata, #Date == dateChoice &][[All, "EndTime"]]],
+					Reverse @ Values[Select[metadata, #Date === dateChoice &][[All, "EndTime"]]],
 					Appearance -> "Vertical"
 				]
 			},
