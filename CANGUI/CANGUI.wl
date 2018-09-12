@@ -307,12 +307,12 @@ tripSelectionMenu[Dynamic[metadata_], Dynamic[startTime_], Dynamic[endTime_], Dy
 			List @ {
 				SetterBar[
 					Dynamic[startTime],
-					Reverse @ Values[Select[metadata, #Date === dateChoice &][[All, "StartTime"]]],
+					(# -> TimeObject[#])& /@ Reverse @ Values[Select[metadata, #Date === dateChoice &][[All, "StartTime"]]],
 					Appearance -> "Vertical"
 				],
 				SetterBar[
 					Dynamic[endTime],
-					Reverse @ Values[Select[metadata, #Date === dateChoice &][[All, "EndTime"]]],
+					(# -> TimeObject[#])& /@ Reverse @ Values[Select[metadata, #Date === dateChoice &][[All, "EndTime"]]],
 					Appearance -> "Vertical"
 				]
 			},
