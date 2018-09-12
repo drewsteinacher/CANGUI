@@ -113,21 +113,27 @@ populateCANFileMetadata[directory_: Directory[]] := With[
 
 getCANMetadata[fileName_String] := With[
 	{
-		fileNameNumbers = FromDigits /@	StringCases[fileName, Repeated[DigitCharacter, 2]]
+		date = fileNameToDateObject[fileName]
 	},
 	With[
 		{
-			date = DateObject @ fileNameNumbers[[ ;; 3]],
-			startTime = TimeObject @ Append[fileNameNumbers[[-2 ;; ]], 0.],
+			startTime = date,
 			duration = getDuration[fileName]
 		},
 		<|
-			"Date" -> date,
+			"Date" -> CurrentDate[date, "Day"],
 			"StartTime" -> startTime,
 			"EndTime" -> startTime + Round[duration, Quantity["Minutes"]],
 			"Duration" -> duration
 		|>
 	]
+];
+
+fileNameToDateObject[fileName_String] := With[
+	{
+		fileNameNumbers = FromDigits /@	StringCases[fileName, Repeated[DigitCharacter, 2]]
+	},
+	DateObject[fileNameNumbers[[ ;; 3]], TimeObject[Append[fileNameNumbers[[-2 ;; ]], 0.]]]
 ];
 
 
@@ -158,7 +164,7 @@ importDataFiles[files:{__String}] := Association[importDataFiles /@ files];
 importDataFiles[file_String] := With[
 	{
 		rawBinaryData = BinaryReadList[file, binaryFileFormat],
-		startTime = TimeObject[Append[FromDigits /@ StringCases[file, Repeated[DigitCharacter, 2]][[-2 ;; ]], 0.]]
+		startTime = fileNameToDateObject[file]
 	},
 	
 	Rule[
@@ -313,7 +319,7 @@ tripSelectionMenu[Dynamic[metadata_], Dynamic[startTime_], Dynamic[endTime_], Dy
 			Frame -> All
 		]
 	],
-	If[Xor @@ (MatchQ[#, _TimeObject]& /@ {startTime, endTime}) && loadedFileDate =!= dateChoice,
+	If[Xor @@ (MatchQ[#, _DateObject]& /@ {startTime, endTime}) && loadedFileDate =!= dateChoice,
 		working = True;
 		canData = importDataFiles[Keys[Select[metadata, #Date === dateChoice &]]];
 		loadedFileDate = dateChoice;
@@ -573,7 +579,7 @@ copyToCliboardButton[Dynamic[combinedMessageData_]] := Button[
 
 plottingArea[Dynamic[canData_], Dynamic[metadata_], Dynamic[startTime_], Dynamic[endTime_], Dynamic[dateChoice_], Dynamic[plotChoice_], Dynamic[combinedMessageData_], Dynamic[relevantCANData_]] := Dynamic[
 	
-	If[MatchQ[{startTime, endTime}, {__TimeObject}] && endTime > startTime,
+	If[MatchQ[{startTime, endTime}, {__DateObject}] && endTime > startTime,
 		relevantCANData = KeySelect[canData, (First[#] <= endTime && Last[#] >= startTime)&];
 		
 		If[validPlotChoiceQ[plotChoice],
