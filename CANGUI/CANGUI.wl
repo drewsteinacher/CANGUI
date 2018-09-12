@@ -571,7 +571,7 @@ statusArea[Dynamic[canData_], Dynamic[startTime_], Dynamic[endTime_], Dynamic[da
 
 copyToCliboardButton[Dynamic[combinedMessageData_]] := Button[
 	"Copy",
-	CopyToClipboard[combinedMessageData],
+	CopyToClipboard[Replace[combinedMessageData, {x_} :> x]],
 	Method -> "Queued",
 	Enabled -> True
 ];
