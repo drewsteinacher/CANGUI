@@ -1,0 +1,108 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='WolframDesktop 11.3' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       161,          7]
+NotebookDataLength[      3127,        100]
+NotebookOptionsPosition[      2244,         74]
+NotebookOutlinePosition[      2585,         89]
+CellTagsIndexPosition[      2542,         86]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Create an EntityStore for Trips", "Title",
+ CellChangeTimes->{{3.7526140620912495`*^9, 
+  3.7526140737205553`*^9}},ExpressionUUID->"6b37ee75-f7c1-47b1-b298-\
+a63f5a3c4817"],
+
+Cell[CellGroupData[{
+
+Cell["Notes", "Section",
+ CellChangeTimes->{{3.752614077840184*^9, 
+  3.7526140784158645`*^9}},ExpressionUUID->"5f144685-0fea-4322-98ef-\
+807afa8b0a1c"],
+
+Cell["\<\
+Trips are Entities, having several properties that are computed by \
+referencing files.
+This will keep performance high and memory low.\
+\>", "Text",
+ CellChangeTimes->{{3.7526140941328073`*^9, 3.7526141308966484`*^9}, {
+  3.7526142533961463`*^9, 
+  3.752614255767783*^9}},ExpressionUUID->"df8dfc6c-1a07-4c62-9229-\
+991cbe381c88"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Work", "Section",
+ CellChangeTimes->{{3.7526141344086275`*^9, 
+  3.752614134848374*^9}},ExpressionUUID->"f119bcfd-c24b-4637-a452-\
+e0c5b81d12c4"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"SetDirectory", "[", 
+   RowBox[{"NotebookDirectory", "[", "]"}], "]"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"Get", "[", "\"\<CANGUI/CANGUI.wl\>\"", "]"}], "\[IndentingNewLine]", 
+ RowBox[{"CreateTripEntityStore", "[", "\"\<DataFiles_Smaller\>\"", 
+  "]"}]}], "Input",
+ CellChangeTimes->{{3.752614635507233*^9, 3.75261466571085*^9}, {
+  3.7526147650636697`*^9, 3.7526147652305746`*^9}},
+ CellLabel->"In[1]:=",ExpressionUUID->"c62dd599-5e49-4da8-915d-3f2aee1160a3"],
+
+Cell[BoxData["888"], "Output",
+ CellChangeTimes->{
+  3.7526149360202928`*^9, {3.752615105234894*^9, 3.752615119157879*^9}},
+ CellLabel->"Out[3]=",ExpressionUUID->"bfb79500-e553-4ff4-a4f1-813df501331a"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{958, 988},
+WindowMargins->{{-7, Automatic}, {Automatic, 0}},
+FrontEndVersion->"11.3 for Microsoft Windows (64-bit) (March 7, 2018)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[583, 22, 178, 3, 96, "Title",ExpressionUUID->"6b37ee75-f7c1-47b1-b298-a63f5a3c4817"],
+Cell[CellGroupData[{
+Cell[786, 29, 152, 3, 67, "Section",ExpressionUUID->"5f144685-0fea-4322-98ef-807afa8b0a1c"],
+Cell[941, 34, 340, 8, 56, "Text",ExpressionUUID->"df8dfc6c-1a07-4c62-9229-991cbe381c88"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[1318, 47, 151, 3, 67, "Section",ExpressionUUID->"f119bcfd-c24b-4637-a452-e0c5b81d12c4"],
+Cell[CellGroupData[{
+Cell[1494, 54, 506, 10, 67, "Input",ExpressionUUID->"c62dd599-5e49-4da8-915d-3f2aee1160a3"],
+Cell[2003, 66, 201, 3, 32, "Output",ExpressionUUID->"bfb79500-e553-4ff4-a4f1-813df501331a"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+

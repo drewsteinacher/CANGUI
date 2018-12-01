@@ -1,6 +1,8 @@
 ClearAll["CANGUI`*"];
 ClearAll["CANGUI`*`*"];
 
+Get["CANGUI`TripEntityStore`"];
+
 BeginPackage["CANGUI`",
 	(Get[#]; #)& /@ {
 		"CANGUI`BinaryProcessing`"
