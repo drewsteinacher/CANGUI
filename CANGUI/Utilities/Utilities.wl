@@ -106,7 +106,7 @@ importDataFiles[file_String] := With[
 	Rule[
 		{startTime, DatePlus[startTime, {rawBinaryData[[-1, 1]], "Second"}]},
 
-	(* Group by CAN ID, create TemporalData objects for them, shifted to match the start time *)
+		(* Group by CAN ID, create TemporalData objects for them, shifted to match the start time *)
 		GroupBy[
 			rawBinaryData,
 			#[[2]]& -> (Drop[#, {2}]&),
