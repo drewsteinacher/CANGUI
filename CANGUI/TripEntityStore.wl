@@ -23,7 +23,36 @@ CreateTripEntityStore[directory_String] /; DirectoryQ[directory] := With[
 		{
 			"Trip" -> <|
 				"Entities" -> tripEntityData,
-				"Properties" -> <||>
+				"Properties" -> <|
+					"File" -> <|
+						"Label" -> "file"
+					|>,
+					"Date" -> <|
+						"Label" -> "date"
+					|>,
+					"StartTime" -> <|
+						"Label" -> "start time"
+					|>,
+					"EndTime" -> <|
+						"Label" -> "start time"
+					|>,
+					"Duration" -> <|
+						"Label" -> "duration"
+					|>,
+					"TripNumber" -> <|
+						"Label" -> "trip number"
+					|>,
+					"RawData" -> <|
+						"Label" -> "raw data",
+						"DefaultFunction" -> EntityFramework`BatchApplied[
+							RightComposition[
+								EntityProperty["Trip", "File"],
+								importDataFiles,
+								Values
+							]
+						]
+					|>
+				|>
 			|>
 		}
 	]
