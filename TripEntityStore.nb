@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       161,          7]
-NotebookDataLength[      3127,        100]
-NotebookOptionsPosition[      2244,         74]
-NotebookOutlinePosition[      2585,         89]
-CellTagsIndexPosition[      2542,         86]
+NotebookDataLength[      4515,        134]
+NotebookOptionsPosition[      3413,        104]
+NotebookOutlinePosition[      3754,        119]
+CellTagsIndexPosition[      3711,        116]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -57,17 +57,47 @@ Cell[BoxData[{
   RowBox[{"SetDirectory", "[", 
    RowBox[{"NotebookDirectory", "[", "]"}], "]"}], 
   ";"}], "\[IndentingNewLine]", 
- RowBox[{"Get", "[", "\"\<CANGUI/CANGUI.wl\>\"", "]"}], "\[IndentingNewLine]", 
- RowBox[{"CreateTripEntityStore", "[", "\"\<DataFiles_Smaller\>\"", 
-  "]"}]}], "Input",
+ RowBox[{"Get", "[", "\"\<CANGUI/TripEntityStore.wl\>\"", 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"store", "=", 
+   RowBox[{"CreateTripEntityStore", "[", "\"\<DataFiles_Smaller\>\"", "]"}]}],
+   ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"EntityUnregister", "/@", 
+   RowBox[{"store", "[", "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"EntityRegister", "[", "store", "]"}]}], "Input",
  CellChangeTimes->{{3.752614635507233*^9, 3.75261466571085*^9}, {
-  3.7526147650636697`*^9, 3.7526147652305746`*^9}},
- CellLabel->"In[1]:=",ExpressionUUID->"c62dd599-5e49-4da8-915d-3f2aee1160a3"],
+  3.7526147650636697`*^9, 3.7526147652305746`*^9}, {3.752616245034541*^9, 
+  3.7526162470014095`*^9}, {3.75261809687976*^9, 3.7526180982229853`*^9}, {
+  3.752618170752243*^9, 3.752618175679408*^9}},
+ CellLabel->"In[13]:=",ExpressionUUID->"c62dd599-5e49-4da8-915d-3f2aee1160a3"],
 
-Cell[BoxData["888"], "Output",
- CellChangeTimes->{
-  3.7526149360202928`*^9, {3.752615105234894*^9, 3.752615119157879*^9}},
- CellLabel->"Out[3]=",ExpressionUUID->"bfb79500-e553-4ff4-a4f1-813df501331a"]
+Cell[BoxData[
+ RowBox[{"{", "\<\"Trip\"\>", "}"}]], "Output",
+ CellChangeTimes->{3.752618176377005*^9, 3.7526182178111606`*^9, 
+  3.7526189655681095`*^9, 3.752621683681484*^9},
+ CellLabel->"Out[17]=",ExpressionUUID->"4e29988d-8bcd-4481-a994-76d8afbd9438"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Entity", "[", 
+   RowBox[{"\"\<Trip\>\"", ",", "\"\<2018-08-30:1\>\""}], "]"}], "[", 
+  "\"\<File\>\"", "]"}]], "Input",
+ CellChangeTimes->{{3.7526181356944475`*^9, 3.752618164782679*^9}},
+ CellLabel->"In[18]:=",ExpressionUUID->"5c9685f7-a970-413a-83a7-d70ce22eb8bf"],
+
+Cell[BoxData[
+ RowBox[{"File", "[", 
+  TemplateBox[{
+   "\"D:\\\\BitBucket\\\\CANGUI\\\\DataFiles_Smaller\\\\18083009.36B\""},
+   "FileArgument"], "]"}]], "Output",
+ CellChangeTimes->{{3.75261815714009*^9, 3.7526181650865045`*^9}, 
+   3.75261821983101*^9, 3.7526189780089645`*^9, 3.7526216846599207`*^9},
+ CellLabel->"Out[18]=",ExpressionUUID->"45cf325d-577d-4d6a-8555-1c699cec1fda"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]
@@ -97,8 +127,12 @@ Cell[941, 34, 340, 8, 56, "Text",ExpressionUUID->"df8dfc6c-1a07-4c62-9229-991cbe
 Cell[CellGroupData[{
 Cell[1318, 47, 151, 3, 67, "Section",ExpressionUUID->"f119bcfd-c24b-4637-a452-e0c5b81d12c4"],
 Cell[CellGroupData[{
-Cell[1494, 54, 506, 10, 67, "Input",ExpressionUUID->"c62dd599-5e49-4da8-915d-3f2aee1160a3"],
-Cell[2003, 66, 201, 3, 32, "Output",ExpressionUUID->"bfb79500-e553-4ff4-a4f1-813df501331a"]
+Cell[1494, 54, 896, 19, 105, "Input",ExpressionUUID->"c62dd599-5e49-4da8-915d-3f2aee1160a3"],
+Cell[2393, 75, 255, 4, 32, "Output",ExpressionUUID->"4e29988d-8bcd-4481-a994-76d8afbd9438"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[2685, 84, 302, 6, 28, "Input",ExpressionUUID->"5c9685f7-a970-413a-83a7-d70ce22eb8bf"],
+Cell[2990, 92, 383, 7, 39, "Output",ExpressionUUID->"45cf325d-577d-4d6a-8555-1c699cec1fda"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]
