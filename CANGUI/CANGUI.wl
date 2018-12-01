@@ -1,11 +1,10 @@
 ClearAll["CANGUI`*"];
 ClearAll["CANGUI`*`*"];
 
-Get["CANGUI`TripEntityStore`"];
-
 BeginPackage["CANGUI`",
 	(Get[#]; #)& /@ {
-		"CANGUI`BinaryProcessing`"
+		"CANGUI`Utilities`BinaryProcessing`",
+		"CANGUI`Utilities`"
 	}
 ];
 
@@ -42,128 +41,6 @@ emptyPlotChoice = <|
 
 
 $plotChoiceDirectory = "PlotChoices";
-
-
-ClearAll[bitPlot];
-Options[bitPlot] = Join[{"ScaleFactor" -> 1}, Options[DateListPlot]];
-bitPlot[td_TemporalData, opts: OptionsPattern[bitPlot]] := With[
-	{
-		factor = OptionValue["ScaleFactor"],
-		byteRange = Range[0, 7],
-		spacing = 0.33,
-		dateListPlotOptions = FilterRules[{opts}, Options[DateListPlot]]
-	},
-	DateListPlot[
-		factor * ((2 * spacing * bitGet[td, #] + # - spacing) & /@ byteRange),
-		ImageSize -> Large,
-		PlotTheme -> "Detailed",
-		Filling -> (# -> factor * (# - (1 + spacing)) & /@ byteRange),
-		FrameTicks -> {{{factor * #, #} & /@ byteRange, Automatic}, Automatic},
-		GridLines -> {Automatic, factor * byteRange},
-		PlotRange -> {Automatic, factor * (MinMax[byteRange] + {-2 * spacing, 2 * spacing})},
-		Sequence @@ dateListPlotOptions
-	]
-];
-
-
-
-populateCANFileMetadata[directory_: Directory[]] := With[
-	{
-		files = FileNames[RegularExpression[StringRepeat["\\d", 8] <> "." <> StringRepeat["\\d", 2]<> "B"], directory],
-		loadingTemplate = StringTemplate["Gathering metadata from `` files (`` Mb total)..."]
-	},
-	
-	PrintTemporary[
-		Internal`LoadingPanel[
-			loadingTemplate[Length[files], Total[FileByteCount /@ files] / 1024.^2]
-		]
-    ];
-    
-    AssociationMap[getCANMetadata, files] // SortBy[#, ({#Date, #StartTime}&)]& // Reverse
-];
-
-getCANMetadata[fileName_String] := With[
-	{
-		date = fileNameToDateObject[fileName]
-	},
-	With[
-		{
-			startTime = date,
-			duration = getDuration[fileName]
-		},
-		<|
-			"Date" -> CurrentDate[date, "Day"],
-			"StartTime" -> startTime,
-			"EndTime" -> startTime + Round[duration, Quantity["Minutes"]],
-			"Duration" -> duration
-		|>
-	]
-];
-
-fileNameToDateObject[fileName_String] := With[
-	{
-		fileNameNumbers = FromDigits /@	StringCases[fileName, Repeated[DigitCharacter, 2]]
-	},
-	DateObject[fileNameNumbers[[ ;; 3]], TimeObject[Append[fileNameNumbers[[-2 ;; ]], 0.]]]
-];
-
-
-(* See http://mathematica.stackexchange.com/questions/55536/get-the-last-line-from-each-of-a-large-number-of-files-transform-them-and-writ *)
-getDuration[file_, maxLineBytes_: 14] := Module[{s, duration},
-	
-	s = OpenRead[file, BinaryFormat -> True];
-	
-	(* Move near the last line in the file *)
-	Quiet[SetStreamPosition[s, -maxLineBytes], SetStreamPosition::stmrng];
-	
-	(* TODO: Better error handling if this information is bad? *)
-	duration = Replace[
-		BinaryRead[s, "UnsignedInteger16"],
-		{
-			{} -> $Failed,
-			d_Integer :> Quantity[d, "Seconds"]
-		}
-	];	
-	Close[s];
-	
-	duration
-];
-
-
-
-importDataFiles[files:{__String}] := Association[importDataFiles /@ files];
-importDataFiles[file_String] := With[
-	{
-		rawBinaryData = BinaryReadList[file, binaryFileFormat],
-		startTime = fileNameToDateObject[file]
-	},
-	
-	Rule[
-		{startTime, DatePlus[startTime, {rawBinaryData[[-1, 1]], "Second"}]},
-		
-		(* Group by CAN ID, create TemporalData objects for them, shifted to match the start time *)
-		GroupBy[
-			rawBinaryData,
-			#[[2]]& -> (Drop[#, {2}]&),
-			TimeSeriesShift[parseRawCANData[#], {{AbsoluteTime @ startTime}}]&
-		] // KeySort
-	]
-];
-importDataFiles[___] := $Failed;
-
-
-
-parseRawCANData[data: {{__Integer}..}] := With[
-	{
-		(* Keep everything in order and unique *)
-		times = Join @@ KeyValueMap[(N @ Most @ Subdivide[#1, #1 + 1, #2])&, Counts[data[[All, 1]]]],
-		values = data[[All, 2 ;;]]
-	},
-	TemporalData[Transpose[values], {times}]
-];
-parseRawCANData[___] := $Failed;
-
-
 
 CANGUI[] := DynamicModule[
 	{

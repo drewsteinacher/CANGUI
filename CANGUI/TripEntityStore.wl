@@ -1,7 +1,13 @@
 ClearAll["CANGUI`TripEntityStore`*"];
 ClearAll["CANGUI`TripEntityStore`*`*"];
 
-BeginPackage["CANGUI`TripEntityStore`"];
+BeginPackage["CANGUI`TripEntityStore`",
+	{
+		"CANGUI`",
+		"CANGUI`Utilities`BinaryProcessing`",
+		"CANGUI`Utilities`"
+	}
+];
 
 CreateTripEntityStore;
 
@@ -11,7 +17,7 @@ CreateTripEntityStore::usage = "CreateTripEntityStore[directory] creates an Enti
 
 CreateTripEntityStore[directory_String] /; DirectoryQ[directory] := Module[
 	{},
-	888
+	populateCANFileMetadata[directory]
 ];
 
 CreateTripEntityStore::invalid = "Invalid directory ``";
