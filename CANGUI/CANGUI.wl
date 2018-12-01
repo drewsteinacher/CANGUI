@@ -14,21 +14,6 @@ CANMessageSpacePlot::usage = "CANMessageSpacePlot plots out which parts of the m
 
 Begin["`Private`"];
 
-(* This is the structure the Arduino writes to the SD card *)
-binaryFileFormat = Flatten[
-	{
-		(* Time since file creation (seconds) *)
-		"UnsignedInteger16",
-		
-		(* CAN ID (remember, it gets converted to decimal here) *)
-		"UnsignedInteger32",
-		
-		(* Actual data *)
-		ConstantArray["UnsignedInteger8", {8}]
-	}
-];
-
-
 emptyPlotChoice = <|
 	"ID" -> "",
 	"Name" -> "",

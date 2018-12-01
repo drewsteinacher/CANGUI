@@ -79,6 +79,22 @@ getDuration[file_, maxLineBytes_: 14] := Module[{s, duration},
 ];
 
 
+(* This is the structure the Arduino writes to the SD card *)
+binaryFileFormat = Flatten[
+	{
+		(* Time since file creation (seconds) *)
+		"UnsignedInteger16",
+		
+		(* CAN ID (remember, it gets converted to decimal here) *)
+		"UnsignedInteger32",
+		
+		(* Actual data *)
+		ConstantArray["UnsignedInteger8", {8}]
+	}
+];
+
+importDataFiles[files: {__File}] := importDataFiles[files[[All, 1]]];
+importDataFiles[File[file_String]] := importDataFiles[file];
 
 importDataFiles[files:{__String}] := Association[importDataFiles /@ files];
 importDataFiles[file_String] := With[
