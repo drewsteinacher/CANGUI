@@ -24,6 +24,16 @@ CreateTripEntityStore[directory_String] /; DirectoryQ[directory] := With[
 			"Trip" -> <|
 				"Entities" -> tripEntityData,
 				"Properties" -> <|
+					"Label" -> <|
+						"Label" -> "label",
+						"DefaultFunction" -> EntityFramework`BatchApplied[
+							RightComposition[
+								CanonicalName,
+								StringSplit[#, ":"]&,
+								(StringTemplate["Trip #`2` on `1`"] @@@ #)&
+							]
+						]
+					|>,
 					"File" -> <|
 						"Label" -> "file"
 					|>,
