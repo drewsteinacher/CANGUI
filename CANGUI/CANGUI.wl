@@ -1,5 +1,7 @@
-BeginPackage["CANGUI`"];
 ClearAll["CANGUI`*"];
+ClearAll["CANGUI`*`*"];
+BeginPackage["CANGUI`"];
+
 
 CANGUI::usage = "CANGUI[] makes a GUI designed to make analyzing CAN data files easy";
 signedInt::usage = "signedInt[bytes: {__Integer} | {__TemporalData}] converts bytes into a signed integer";
@@ -7,6 +9,8 @@ unsignedInt::usage = "unsignedInt[bytes: {__Integer} | {__TemporalData}] convert
 bitGet::usage = "bitGet[td_TemporalData, k_Integer] gets the kth bit from the given TemporalData object";
 nibbleGet::usage = "nibbleGet[byte_, n_Integer, offset_Integer:0] gets the nth nibble from the right in byte (with an optional offset)";
 bitPlot::usage = "bitPlot[byte] plots the bits in the given byte in one plot";
+
+CANMessageSpacePlot::usage = "CANMessageSpacePlot plots out which parts of the message space correspond to which messages";
 
 Begin["`Private`"];
 
@@ -94,7 +98,7 @@ bitPlot[td_TemporalData, opts: OptionsPattern[bitPlot]] := With[
 
 populateCANFileMetadata[directory_: Directory[]] := With[
 	{
-		files = FileNames[RegularExpression[StringRepeat["\\d", 8] <> ".DAT"], directory],
+		files = FileNames[RegularExpression[StringRepeat["\\d", 8] <> "." <> StringRepeat["\\d", 2]<> "B"], directory],
 		loadingTemplate = StringTemplate["Gathering metadata from `` files (`` Mb total)..."]
 	},
 	
@@ -109,21 +113,27 @@ populateCANFileMetadata[directory_: Directory[]] := With[
 
 getCANMetadata[fileName_String] := With[
 	{
-		fileNameNumbers = ToExpression[ StringJoin @@@ Partition[Characters @ FileBaseName[fileName], 2]]
+		date = fileNameToDateObject[fileName]
 	},
 	With[
 		{
-			date = DateObject @ Prepend[fileNameNumbers[[ ;; 2]], 2017(*DateValue["Year"]*)],
-			startTime = TimeObject @ fileNameNumbers[[-2 ;; ]],
+			startTime = date,
 			duration = getDuration[fileName]
 		},
 		<|
-			"Date" -> date,
+			"Date" -> CurrentDate[date, "Day"],
 			"StartTime" -> startTime,
 			"EndTime" -> startTime + Round[duration, Quantity["Minutes"]],
 			"Duration" -> duration
 		|>
 	]
+];
+
+fileNameToDateObject[fileName_String] := With[
+	{
+		fileNameNumbers = FromDigits /@	StringCases[fileName, Repeated[DigitCharacter, 2]]
+	},
+	DateObject[fileNameNumbers[[ ;; 3]], TimeObject[Append[fileNameNumbers[[-2 ;; ]], 0.]]]
 ];
 
 
@@ -154,7 +164,7 @@ importDataFiles[files:{__String}] := Association[importDataFiles /@ files];
 importDataFiles[file_String] := With[
 	{
 		rawBinaryData = BinaryReadList[file, binaryFileFormat],
-		startTime = TimeObject @ ToExpression[StringJoin @@@ Partition[Characters @ StringTake[FileBaseName[file], {5, -1}], 2]]
+		startTime = fileNameToDateObject[file]
 	},
 	
 	Rule[
@@ -297,19 +307,19 @@ tripSelectionMenu[Dynamic[metadata_], Dynamic[startTime_], Dynamic[endTime_], Dy
 			List @ {
 				SetterBar[
 					Dynamic[startTime],
-					Reverse @ Values[Select[metadata, #Date == dateChoice &][[All, "StartTime"]]],
+					(# -> TimeObject[#])& /@ Reverse @ Values[Select[metadata, #Date === dateChoice &][[All, "StartTime"]]],
 					Appearance -> "Vertical"
 				],
 				SetterBar[
 					Dynamic[endTime],
-					Reverse @ Values[Select[metadata, #Date == dateChoice &][[All, "EndTime"]]],
+					(# -> TimeObject[#])& /@ Reverse @ Values[Select[metadata, #Date === dateChoice &][[All, "EndTime"]]],
 					Appearance -> "Vertical"
 				]
 			},
 			Frame -> All
 		]
 	],
-	If[Xor @@ (MatchQ[#, _TimeObject]& /@ {startTime, endTime}) && loadedFileDate =!= dateChoice,
+	If[Xor @@ (MatchQ[#, _DateObject]& /@ {startTime, endTime}) && loadedFileDate =!= dateChoice,
 		working = True;
 		canData = importDataFiles[Keys[Select[metadata, #Date === dateChoice &]]];
 		loadedFileDate = dateChoice;
@@ -561,7 +571,7 @@ statusArea[Dynamic[canData_], Dynamic[startTime_], Dynamic[endTime_], Dynamic[da
 
 copyToCliboardButton[Dynamic[combinedMessageData_]] := Button[
 	"Copy",
-	CopyToClipboard[combinedMessageData],
+	CopyToClipboard[Replace[combinedMessageData, {x_} :> x]],
 	Method -> "Queued",
 	Enabled -> True
 ];
@@ -569,7 +579,7 @@ copyToCliboardButton[Dynamic[combinedMessageData_]] := Button[
 
 plottingArea[Dynamic[canData_], Dynamic[metadata_], Dynamic[startTime_], Dynamic[endTime_], Dynamic[dateChoice_], Dynamic[plotChoice_], Dynamic[combinedMessageData_], Dynamic[relevantCANData_]] := Dynamic[
 	
-	If[MatchQ[{startTime, endTime}, {__TimeObject}] && endTime > startTime,
+	If[MatchQ[{startTime, endTime}, {__DateObject}] && endTime > startTime,
 		relevantCANData = KeySelect[canData, (First[#] <= endTime && Last[#] >= startTime)&];
 		
 		If[validPlotChoiceQ[plotChoice],
@@ -644,6 +654,195 @@ validPlotChoiceQ[plotChoice_Association] := With[{ids = StringTrim @ StringSplit
 		MatchQ[plotChoice["Options"], Hold[{___Rule}]]
 	]
 ];
+
+
+$MaxByteCount = 8;
+$MaxBitCount = 8 * $MaxByteCount;
+
+rowCount = 1;
+row := rowCount++;
+
+colCount = 1;
+col := colCount++;
+
+Attributes[byteSequence] = {HoldAllComplete};
+Attributes[nibble] = {HoldAllComplete};
+Attributes[bit] = {HoldAllComplete};
+
+CANMessageSpacePlot[] := Module[{sa},
+	colCount = rowCount = 1;
+	sa = SparseArray[
+		processMessages @ {
+			topScale[],
+			plotMessages[]
+		},
+		{rowCount - 1, ($MaxByteCount * 8) + 1},
+		SpanFromLeft
+	];
+	
+	Grid[
+		Normal[sa],
+		Frame -> All,
+		Alignment -> {Center, Center},
+		ItemSize -> Full
+	]
+
+];
+
+(* Avoids subsequent messages getting overridden while maintaining order *)
+processMessages[x_] := Module[
+	{flattened, ends, rest},
+	flattened = Flatten[x];
+	ends = Select[flattened, Last[#] === ""&];
+	rest = Select[flattened, Last[#] =!= ""&];
+	Join[rest, ends]
+];
+
+topScale[] := Module[
+	{r},
+	Flatten @ {
+	(* Convenient scale at the top (done at bottom for simplicity for now) *)
+		r = row;
+		{r, 1} -> "ID",
+		{r, (# - 1) * 8 + 2} -> messageSpaceButton[StringTemplate["Byte #``"][#], "Appearance" -> "Frameless"] & /@ (Range[$MaxByteCount]),
+	
+	
+	(* Equivalent, but one might be faster? *)
+		r = row;
+		{r, 1} -> SpanFromAbove,
+		{r, # + 1} -> messageSpaceButton[Replace[Mod[#, 8], 0 -> 8], "Appearance" -> "Frameless"] & /@ Range[$MaxByteCount * 8],
+		
+		r = row;
+		{r, 1} -> SpanFromAbove,
+		{r, # + 1} -> messageSpaceButton[#, "Appearance" -> "Frameless"] & /@ Range[$MaxByteCount * 8]
+	}
+];
+
+
+plotMessages[] := Flatten[getMessageRows[plotChoiceImport[]]];
+
+getMessageRows[plotChoices_] := Module[
+	{groupedMessageData},
+	
+	groupedMessageData = GroupBy[
+		plotChoices,
+		#ID&,
+		Map[Join[#, <|"Bytes" -> getBytes[#Function], "Nibbles" -> getNibbles[#Function], "Bits" -> getBits[#Function]|>] &]
+	];
+	groupedMessageData = KeyMap[StringTrim[StringSplit[#, ","]] &, groupedMessageData];
+	groupedMessageData = KeyValueMap[
+		Function[{IDs, messages},
+			Table[id -> message, {id, IDs}, {message, messages}]
+		],
+		groupedMessageData
+	];
+	groupedMessageData = Flatten @ groupedMessageData;
+	groupedMessageData = GroupBy[groupedMessageData, First -> Last];
+	groupedMessageData = KeySortBy[groupedMessageData, FromDigits[#, 16]&];
+	KeyValueMap[processMessage, groupedMessageData]
+];
+
+getBytes[foo_] := Join[
+	MinMax /@ Split[
+		Sort[
+			Complement[
+				Cases[foo, Slot[byteNumber_Integer] :> fixByteCount[byteNumber], Infinity],
+				Cases[foo, (bitGet | nibbleGet)[Slot[byteNumber_Integer], _] :> fixByteCount[byteNumber], Infinity]
+			]
+		],
+		Less
+	]
+	(* TODO: Handle SlotSequence *)
+	(*,
+	Cases[foo, SlotSequence[byteNumber_Integer] :> fixByteCount /@ Range[byteNumber, Ceiling[byteNumber, 8]], Infinity]
+	*)
+];
+fixByteCount = Function[# //. x_Integer /; x > $MaxByteCount :> (x - $MaxByteCount)];
+
+getNibbles[foo_] := Cases[foo, nibbleGet[Slot[byteNumber_Integer], nibbleNumber_] :> {(byteNumber - 1) * 8 + nibbleNumber * 4}, Infinity];
+
+getBits[foo_] := Cases[foo, bitGet[Slot[byteNumber_Integer], bitNumber_] :> {(byteNumber - 1)*8 + bitNumber}, Infinity];
+
+processMessage[id_, plotChoices_] := addMessageRow[id, Sequence @@ Flatten[processPlotChoice /@ plotChoices]];
+
+processPlotChoice = {
+	Function[{start, end},
+		byteSequence[start, end, #Name, Print[#Name];, Dataset[#]]
+	] @@@ #Bytes,
+	
+	Function[{x}, nibble[x, #Name, Print[#Name];, Dataset[#]]] @@@ #Nibbles,
+	
+	(* TODO: Use a 1-3 character "ShortName" instead of "..." *)
+	Function[{x}, bit[x, "...", Print[#Name];, Dataset[#]]] @@@ #Bits
+	
+}&;
+
+addMessageRow[id_String, bitsAndBytes__] := Module[
+	{r = row},
+	Join[
+		{addBit[r, -1, id]},
+		Cases[{bitsAndBytes}, byteSequence[args__] :> addByteSequence[r, args]],
+		Cases[{bitsAndBytes}, nibble[args__] :> addNibble[r, args]],
+		Cases[{bitsAndBytes}, bit[args__] :> addBit[r, args]]
+	]
+];
+addMessageRow[___] := {};
+
+Attributes[addBit] = {HoldRest};
+addBit[r_Integer?Positive, colPosition_Integer, buttonArguments__] := Block[
+	{colCount = colPosition + 2, extraOptions},
+	extraOptions = If[colPosition === -1,
+		{"Appearance" -> "Frameless"},
+		{}
+	];
+	{
+		{r, colCount} -> messageSpaceButton[buttonArguments, Evaluate[Sequence @@ extraOptions]],
+		If[colCount < ($MaxBitCount + 1),
+			{r, colCount + 1} -> "",
+			{}
+		]
+	}
+];
+addBit[args___] := {};
+
+Attributes[addNibble] = {HoldRest};
+addNibble[r_Integer?Positive, colPosition_Integer, buttonArguments__] := Block[
+	{colCount = colPosition + 2, extraOptions},
+	extraOptions = If[colPosition === -1,
+		{"Appearance" -> "Frameless"},
+		{}
+	];
+	{
+		{r, colCount} -> messageSpaceButton[buttonArguments, Evaluate[Sequence @@ extraOptions]],
+		If[colCount + 4 < ($MaxBitCount + 1),
+			{r, colCount + 4} -> "",
+			{}
+		]
+	}
+];
+addNibble[args___] := {};
+
+Attributes[addByteSequence] = {HoldRest};
+addByteSequence[r_Integer?Positive, byteStart_Integer, byteEnd_Integer, buttonArguments__, opts: OptionsPattern[]] := Block[
+	{
+		colCountStart = (8 * (byteStart - 1)) + 1 + 1,
+		colCountEnd = (8 * (byteEnd - 1)) + 1 + 1
+	},
+	{
+		{r, colCountStart} -> messageSpaceButton[buttonArguments, opts],
+		If[colCountEnd + 8 < ($MaxBitCount + 1),
+			{r, colCountEnd + 8} -> "",
+			{}
+		]
+	}
+];
+
+Attributes[messageSpaceButton] = {HoldRest};
+Options[messageSpaceButton] = {
+	"Appearance" -> Automatic
+};
+messageSpaceButton[label_, action_: Null, opts: OptionsPattern[]] := Button[label, action, "Appearance" -> OptionValue["Appearance"], FrameMargins -> None, opts];
+messageSpaceButton[label_, action_: Null, tooltip: Except[_Rule], opts:OptionsPattern[]] := Tooltip[messageSpaceButton[label, action, opts], tooltip];
 
 
 End[];
