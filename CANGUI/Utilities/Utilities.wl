@@ -120,7 +120,7 @@ importDataFiles[___] := $Failed;
 
 parseRawCANData[data: {{__Integer}..}] := With[
 	{
-	(* Keep everything in order and unique *)
+		(* Keep everything in order and unique *)
 		times = Join @@ KeyValueMap[(N @ Most @ Subdivide[#1, #1 + 1, #2])&, Counts[data[[All, 1]]]],
 		values = data[[All, 2 ;;]]
 	},
