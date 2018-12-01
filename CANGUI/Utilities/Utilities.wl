@@ -50,7 +50,10 @@ fileNameToDateObject[fileName_String] := With[
 	{
 		fileNameNumbers = FromDigits /@	StringCases[fileName, Repeated[DigitCharacter, 2]]
 	},
-	DateObject[fileNameNumbers[[ ;; 3]], TimeObject[Append[fileNameNumbers[[-2 ;; ]], 0.]]]
+	DateObject[
+		{2000, 0, 0} + fileNameNumbers[[ ;; 3]],
+		TimeObject[Append[fileNameNumbers[[-2 ;; ]], 0.]]
+	]
 ];
 
 
