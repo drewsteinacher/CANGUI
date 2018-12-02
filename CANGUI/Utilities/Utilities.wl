@@ -1,7 +1,8 @@
 ClearAll["CANGUI`Utilities`*"];
 ClearAll["CANGUI`Utilities`*`*"];
 
-BeginPackage["CANGUI`Utilities`"];
+
+BeginPackage["CANGUI`Utilities`", (Get[#]; #)& /@ {"CANGUI`Utilities`BinaryProcessing`"}];
 
 populateCANFileMetadata;
 getCANMetadata;
@@ -9,6 +10,7 @@ fileNameToDateObject;
 getDuration;
 importDataFiles;
 parseRawCANData;
+GetPlotChoiceTimeSeries;
 
 Begin["`Private`"];
 
@@ -127,6 +129,26 @@ parseRawCANData[data: {{__Integer}..}] := With[
 	TemporalData[Transpose[values], {times}]
 ];
 parseRawCANData[___] := $Failed;
+
+
+GetPlotChoiceTimeSeries[plotChoice_Association, relevantCANData_] := Module[
+	{keys, combinedMessageData0, combinedMessageData},
+	
+	keys = StringTrim @ StringSplit[plotChoice["ID"], ","];
+	keys = FromDigits[#, 16]& /@ keys;
+	
+	(* Verify that there is some data for the given keys *)
+	If[Not @ MemberQ[Flatten[Keys @ relevantCANData], Alternatives @@ keys],
+		Return[Missing["NotAvailable"]];
+	];
+	
+	combinedMessageData0 = Select[KeyTake[relevantCANData, keys], FreeQ[_Missing]];
+	combinedMessageData = Join @@@ (Map[#["Components"]&] /@ Values[combinedMessageData0]);
+	combinedMessageData = plotChoice["Function"] @@@ combinedMessageData;
+	
+	First @ combinedMessageData
+];
+
 
 End[];
 

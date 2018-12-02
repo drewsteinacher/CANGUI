@@ -15,9 +15,10 @@ Begin["`Private`"];
 
 CreateTripEntityStore::usage = "CreateTripEntityStore[directory] creates an EntityStore from the trip files in the given directory";
 
-CreateTripEntityStore[directory_String] /; DirectoryQ[directory] := With[
+CreateTripEntityStore[dataDirectory_String ? DirectoryQ, plotChoiceDirectory : _String ? DirectoryQ : None] := With[
 	{
-		tripEntityData = getTripData[directory]
+		tripEntityData = getTripData[dataDirectory],
+		tripPropertyData = getPropertiesFromPlotChoices[plotChoiceDirectory]
 	},
 	EntityStore[
 		{
@@ -61,7 +62,8 @@ CreateTripEntityStore[directory_String] /; DirectoryQ[directory] := With[
 								Values
 							]
 						]
-					|>
+					|>,
+					tripPropertyData
 				|>
 			|>
 		}
@@ -71,10 +73,10 @@ CreateTripEntityStore[directory_String] /; DirectoryQ[directory] := With[
 CreateTripEntityStore::invalid = "Invalid directory ``";
 CreateTripEntityStore[directory_, ___] := (Message[CreateTripEntityStore::invalid, directory]; $Failed);
 
-getTripData[directory_String] := Module[
+getTripData[dataDirectory_String] := Module[
 	{fileToMetadata, entityData},
 
-	fileToMetadata = populateCANFileMetadata[directory];
+	fileToMetadata = populateCANFileMetadata[dataDirectory];
 
 	entityData = KeyValueMap[Prepend[#2, "File" -> File[AbsoluteFileName[#1]]]&, fileToMetadata];
 	entityData = GroupBy[entityData, Lookup["Date"], SortBy[Lookup["StartTime"]]];
@@ -92,6 +94,66 @@ getTripData[directory_String] := Module[
 		Association
 	]
 ];
+
+getPropertiesFromPlotChoices[plotChoicesDirectory_String] := Module[
+	{choices, properties},
+	
+	choices = importLatestPlotChoiceFile[plotChoicesDirectory];
+	
+	properties = getPropertyEntryFromPlotChoice /@ Select[choices, StringLength[#Name] > 0&];
+	
+	(* TODO: Deal with duplicate properties by numbering them? *)
+	properties
+];
+getPropertiesFromPlotChoices[___] := <||>;
+
+importLatestPlotChoiceFile[plotChoicesDirectory_String] := Module[
+	{file, choices},
+	
+	SetDirectory[plotChoicesDirectory];
+	file = TakeLargestBy[FileNames[plotChoicesDirectory ~~ "_" ~~ __ ~~ ".m"], FileDate, 1];
+	If[MatchQ[file, {_String}],
+		choices = Import @ First @ file;,
+		choices = {};
+	];
+	ResetDirectory[];
+	
+	choices
+];
+
+getPropertyEntryFromPlotChoice = Function[
+	plotChoice,
+    Module[
+		{longerName},
+	    longerName = plotChoice["Name"] <> " time series";
+		Rule[
+			getPropertyCanonicalNameFromPlotChoiceName[longerName],
+			<|
+				plotChoice,
+				"Label" -> (longerName // getPropertyLabelFromPlotChoiceName),
+				"DefaultFunction" -> RightComposition[
+					#["RawData"]&,
+					GetPlotChoiceTimeSeries[plotChoice, {#}]&
+				],
+				"PlotChoice" -> plotChoice
+			|>
+		]
+	]
+];
+
+getPropertyCanonicalNameFromPlotChoiceName = RightComposition[
+	StringReplace["%" -> "Percent"],
+	StringDelete["(" | ")" | "\"" | "?"],
+	StringSplit /* Capitalize /* StringJoin
+];
+
+(* TODO: Improve the labels to be mostly lowercase to match other properties? *)
+getPropertyLabelFromPlotChoiceName = RightComposition[
+	StringReplace[lc: LetterCharacter ~~ "?" :> lc <> " (?) "],
+	StringReplace[Whitespace -> " "]
+];
+
+
 
 End[];
 
