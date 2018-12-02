@@ -103,7 +103,7 @@ getPropertiesFromPlotChoices[plotChoicesDirectory_String] := Module[
 	properties = getPropertyEntryFromPlotChoice /@ Select[choices, StringLength[#Name] > 0&];
 	
 	(* TODO: Deal with duplicate properties by numbering them? *)
-	properties
+	Flatten[properties]
 ];
 getPropertiesFromPlotChoices[___] := <||>;
 
@@ -124,20 +124,45 @@ importLatestPlotChoiceFile[plotChoicesDirectory_String] := Module[
 getPropertyEntryFromPlotChoice = Function[
 	plotChoice,
     Module[
-		{longerName},
+		{longerName, propertyCanonicalName, aggregationFunctions},
 	    longerName = plotChoice["Name"] <> " time series";
-		Rule[
-			getPropertyCanonicalNameFromPlotChoiceName[longerName],
-			<|
-				plotChoice,
-				"Label" -> (longerName // getPropertyLabelFromPlotChoiceName),
-				"DefaultFunction" -> RightComposition[
-					#["RawData"]&,
-					GetPlotChoiceTimeSeries[plotChoice, {#}]&
-				],
-				"PlotChoice" -> plotChoice
-			|>
-		]
+	    propertyCanonicalName = getPropertyCanonicalNameFromPlotChoiceName[longerName];
+	    aggregationFunctions = {Min, Mean, Median, StandardDeviation, Max};
+	    {
+		    Rule[
+				propertyCanonicalName,
+				<|
+					plotChoice,
+					"Label" -> getPropertyLabelFromPlotChoiceName[longerName],
+					"DefaultFunction" -> Function[entity,
+						entity // RightComposition[
+							#["RawData"]&,
+							GetPlotChoiceTimeSeries[plotChoice, {#}]&,
+							
+							Function[
+								timeSeries,
+								(entity[EntityProperty["Trip", propertyCanonicalName, {"AggregationFunction" -> #}]] = #[timeSeries])& /@ aggregationFunctions;
+								timeSeries
+							]
+						]
+					],
+					"PlotChoice" -> plotChoice
+				|>
+			],
+		    Rule[
+			    {propertyCanonicalName, "AggregationFunction" -> _},
+			    <|
+				    "Label" -> getPropertyLabelFromPlotChoiceName[plotChoice["Name"]],
+				    "DefaultFunction" -> Function[
+					    {entity, qualifiers},
+					    With[
+						    {agg = Lookup[qualifiers, "AggregationFunction"]},
+					        entity[EntityProperty["Trip", propertyCanonicalName, {"AggregationFunction" -> agg}]] = agg[entity[propertyCanonicalName]]
+					    ]
+				    ]
+			    |>
+		    ]& /@ aggregationFunctions
+	    }
 	]
 ];
 
