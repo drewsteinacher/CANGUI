@@ -56,10 +56,25 @@ CreateTripEntityStore[dataDirectory_String ? DirectoryQ, plotChoiceDirectory : _
 					"RawData" -> <|
 						"Label" -> "raw data",
 						"DefaultFunction" -> EntityFramework`BatchApplied[
-							RightComposition[
-								EntityProperty["Trip", "File"],
-								importDataFiles,
-								Values
+							Function[
+								entities,
+								entities // RightComposition[
+									EntityProperty["Trip", "File"],
+									importDataFiles,
+									Values,
+									Function[
+										listOfAssociations,
+										MapThread[
+											Function[
+												{entity, idToTimeSeries},
+												entity["EndTime"] = First @ TakeLargest[#["LastDate"]& /@ Values[idToTimeSeries], 1];
+												entity["Duration"] = Subtract @@ entity[{"EndTime", "StartTime"}];
+												idToTimeSeries
+											],
+											{entities, listOfAssociations}
+										]
+									]
+								]
 							]
 						]
 					|>,
