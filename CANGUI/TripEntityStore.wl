@@ -48,7 +48,20 @@ CreateTripEntityStore[dataDirectory_String ? DirectoryQ, plotChoiceDirectory : _
 						"Label" -> "start time"
 					|>,
 					"Duration" -> <|
-						"Label" -> "duration"
+						"Label" -> "duration",
+						"FormattingFunction" -> Function[
+							amount,
+							N @ Which[
+								amount < Quantity[1, "Minutes"],
+								UnitConvert[amount, "Seconds"],
+								
+								amount < Quantity[1, "Hour"],
+								UnitConvert[amount, "Minutes"],
+								
+								True,
+								UnitConvert[amount, "Hours"]
+							]
+						]
 					|>,
 					"TripNumber" -> <|
 						"Label" -> "trip number"
