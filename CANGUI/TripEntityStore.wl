@@ -91,6 +91,14 @@ CreateTripEntityStore[dataDirectory_String ? DirectoryQ, plotChoiceDirectory : _
 							]
 						]
 					|>,
+					"PositionTimeSeries" -> <|
+						"Label" -> "position time series",
+						"DefaultFunction" -> EntityFramework`BatchApplied[
+							(* TODO: Pass databin ID in via an option? *)
+							getGPSTimeSeries["ilkxZTEP"],
+							BatchSize -> 100
+						]
+					|>,
 					tripPropertyData
 				|>
 			|>
@@ -207,6 +215,41 @@ getPropertyLabelFromPlotChoiceName = RightComposition[
 ];
 
 
+
+getGPSTimeSeries[databinID_String][entities : {__Entity}] := Module[
+	{dateRange, data, splitTrips},
+	
+	dateRange = getDateRange[entities];
+	
+	data = Normal @ Databin[databinID, dateRange, {"type", "t", "loc"}];
+	
+	splitTrips = Split[data, #1["type"] =!= "end" &];
+	splitTrips = TimeSeries[Lookup[#, {"t", "loc"}]] & /@ splitTrips;
+	
+	Function[
+		entity,
+		With[
+			{
+				(* TODO: Deal with time zone, DST changes, and tolerance more robustly, perhaps at the data level? *)
+				tripStart =	entity["StartTime"] - Quantity[1.1, "Hours"] - Quantity[5, "Minutes"],
+				tripEnd = entity["EndTime"] - Quantity[1.1, "Hours"] + Quantity[5, "Minutes"]
+			},
+			splitTrips // RightComposition[
+				Select[#["FirstDate"] >= tripStart && #["LastDate"] <= tripEnd &],
+				Fold[TimeSeriesInsert]
+			]
+		]
+	] /@ entities
+	
+];
+
+getDateRange = RightComposition[
+	EntityValue[#, {"StartTime", "EndTime"}]&,
+	Flatten /* MinMax,
+	Map[DayRound],
+	Apply[{#1, #2 + Quantity[1, "Days"]} &],
+	ReplaceAll[DateObject[{y_, m_, d_}, ___] :> DateObject[{y, m, d, 0}]]
+];
 
 End[];
 
