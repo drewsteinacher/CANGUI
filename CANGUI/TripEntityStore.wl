@@ -94,9 +94,43 @@ CreateTripEntityStore[dataDirectory_String ? DirectoryQ, plotChoiceDirectory : _
 					"PositionTimeSeries" -> <|
 						"Label" -> "position time series",
 						"DefaultFunction" -> EntityFramework`BatchApplied[
-							(* TODO: Pass databin ID in via an option? *)
-							getGPSTimeSeries["ilkxZTEP"],
+							Function[
+								entities,
+								entities // RightComposition[
+									(* TODO: Pass databin ID in via an option? *)
+									getGPSTimeSeries["ilkxZTEP"],
+									{entities, #1}&,
+									MapThread[
+										Function[
+											{entity, timeSeries},
+											If[MatchQ[timeSeries, _TemporalData],
+												entity["StartPosition"] = timeSeries["FirstValue"];
+												entity["EndPosition"] = timeSeries["LastValue"];
+											];
+											timeSeries
+										]
+									]
+								]
+							],
 							BatchSize -> 100
+						]
+					|>,
+					"StartPosition" -> <|
+						"Label" -> "start position",
+						"DefaultFunction" -> EntityFramework`BatchApplied[
+							RightComposition[
+								EntityProperty["Trip", "PositionTimeSeries"],
+								Map[Replace[td_TemporalData :> td["FirstValue"]]]
+							]
+						]
+					|>,
+					"EndPosition" -> <|
+						"Label" -> "end position",
+						"DefaultFunction" -> EntityFramework`BatchApplied[
+							RightComposition[
+								EntityProperty["Trip", "PositionTimeSeries"],
+								Map[Replace[td_TemporalData :> td["LastValue"]]]
+							]
 						]
 					|>,
 					tripPropertyData
