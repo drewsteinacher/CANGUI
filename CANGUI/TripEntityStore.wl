@@ -221,25 +221,16 @@ getGPSTimeSeries[databinID_String][entities : {__Entity}] := Module[
 	
 	dateRange = getDateRange[entities];
 	
-	data = Normal @ Databin[databinID, dateRange, {"type", "t", "loc"}];
+	data = Normal @ Dataset @ Databin[databinID, dateRange, {"type", "t", "loc"}];
+	data = DeleteDuplicatesBy[data, KeyDrop[{"Timestamp"}]];
+	
+	(* TODO: Actually figure out time zone nonsense instead of resorting to using the "Timestamp" *)
+	data = Append[#, "t" -> #Timestamp] & /@ data;
 	
 	splitTrips = Split[data, #1["type"] =!= "end" &];
 	splitTrips = TimeSeries[Lookup[#, {"t", "loc"}]] & /@ splitTrips;
 	
-	Function[
-		entity,
-		With[
-			{
-				(* TODO: Deal with time zone, DST changes, and tolerance more robustly, perhaps at the data level? *)
-				tripStart =	entity["StartTime"] - Quantity[1.1, "Hours"] - Quantity[5, "Minutes"],
-				tripEnd = entity["EndTime"] - Quantity[1.1, "Hours"] + Quantity[5, "Minutes"]
-			},
-			splitTrips // RightComposition[
-				Select[#["FirstDate"] >= tripStart && #["LastDate"] <= tripEnd &],
-				Fold[TimeSeriesInsert]
-			]
-		]
-	] /@ entities
+	findMatchingTrips[splitTrips] /@ entities
 	
 ];
 
@@ -249,6 +240,30 @@ getDateRange = RightComposition[
 	Map[DayRound],
 	Apply[{#1, #2 + Quantity[1, "Days"]} &],
 	ReplaceAll[DateObject[{y_, m_, d_}, ___] :> DateObject[{y, m, d, 0}]]
+];
+
+findMatchingTrips[splitTrips_, tolerance : _ : Quantity[16, "Minutes"]] := Function[
+	entity,
+	With[
+		{
+			tripStart =	entity["StartTime"] - tolerance,
+			tripEnd = entity["EndTime"] + tolerance
+		},
+		splitTrips // RightComposition[
+			Select[
+				And[
+					Between[{tripStart, tripEnd}][#["FirstDate"]],
+					Between[{tripStart, tripEnd}][#["LastDate"]]
+				]&
+			],
+			Replace[
+				{
+					td: {__TemporalData} :> Fold[TimeSeriesInsert, td],
+					_ -> Missing["NotAvailable"]
+				}
+			]
+		]
+	]
 ];
 
 End[];
