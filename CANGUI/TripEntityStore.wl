@@ -262,7 +262,7 @@ getGPSTimeSeries[databinID_String][entities : {__Entity}] := Module[
 	data = Append[#, "t" -> #Timestamp] & /@ data;
 	
 	splitTrips = Split[data, #1["type"] =!= "end" &];
-	splitTrips = TimeSeries[Lookup[#, {"t", "loc"}]] & /@ splitTrips;
+	splitTrips = TimeSeries[Select[Lookup[#, {"t", "loc"}], MatchQ[{_DateObject, _GeoPosition}]]] & /@ splitTrips;
 	
 	findMatchingTrips[splitTrips] /@ entities
 	
