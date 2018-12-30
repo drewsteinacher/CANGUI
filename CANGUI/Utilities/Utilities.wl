@@ -11,6 +11,7 @@ getDuration;
 importDataFiles;
 parseRawCANData;
 GetPlotChoiceTimeSeries;
+GPSPlot;
 TimeSeriesSliceData;
 
 Begin["`Private`"];
@@ -149,6 +150,34 @@ GetPlotChoiceTimeSeries[plotChoice_Association, relevantCANData_] := Module[
 	combinedMessageData = plotChoice["Function"] @@@ combinedMessageData;
 	
 	First @ combinedMessageData
+];
+
+Options[GPSPlot] := Options[GeoGraphics];
+GPSPlot[gpsTimeSeries_TemporalData, opts : OptionsPattern[]] := With[
+	{
+		sliceData = TimeSeriesSliceData[gpsTimeSeries]
+	},
+	GeoGraphics[
+		{
+			{Black, Opacity[0.25], GeoPath[sliceData[[All, 2]]]},
+			Function[
+				{time, position, speed, accuracy},
+				{Red, GeoStyling[Opacity[1]], GeoDisk[position, accuracy]}
+			] @@@ Select[sliceData, #[[4]] < Quantity[100, "Meters"] &],
+			{
+				EdgeForm[Directive[Black]],
+				GeoStyling[Opacity[0]],
+				Function[
+					{time, position, speed, accuracy},
+					Tooltip[
+						GeoDisk[position, Quantity[50, "Meters"]],
+						Column[{time, position, speed, accuracy}, Frame -> All]
+					]
+				] @@@ sliceData
+			}
+		},
+		opts
+	]
 ];
 
 TimeSeriesSliceData::usage = "TimeSeriesSliceData[ts_TemporalData] produces a List of values for each of the path values in the time series";
