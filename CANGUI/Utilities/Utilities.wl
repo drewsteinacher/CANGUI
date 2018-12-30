@@ -11,6 +11,7 @@ getDuration;
 importDataFiles;
 parseRawCANData;
 GetPlotChoiceTimeSeries;
+TimeSeriesSliceData;
 
 Begin["`Private`"];
 
@@ -150,6 +151,11 @@ GetPlotChoiceTimeSeries[plotChoice_Association, relevantCANData_] := Module[
 	First @ combinedMessageData
 ];
 
+TimeSeriesSliceData::usage = "TimeSeriesSliceData[ts_TemporalData] produces a List of values for each of the path values in the time series";
+TimeSeriesSliceData[td_TemporalData] := With[
+	{times = td["Times"]},
+	Transpose[Prepend[td["SliceData", times], DateObject /@ times]]
+];
 
 End[];
 
