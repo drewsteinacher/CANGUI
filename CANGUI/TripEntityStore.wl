@@ -91,8 +91,8 @@ CreateTripEntityStore[dataDirectory_String ? DirectoryQ, plotChoiceDirectory : _
 							]
 						]
 					|>,
-					"PositionTimeSeries" -> <|
-						"Label" -> "position time series",
+					"GPSTimeSeries" -> <|
+						"Label" -> "GPS time series",
 						"DefaultFunction" -> EntityFramework`BatchApplied[
 							Function[
 								entities,
@@ -119,7 +119,7 @@ CreateTripEntityStore[dataDirectory_String ? DirectoryQ, plotChoiceDirectory : _
 						"Label" -> "start position",
 						"DefaultFunction" -> EntityFramework`BatchApplied[
 							RightComposition[
-								EntityProperty["Trip", "PositionTimeSeries"],
+								EntityProperty["Trip", "GPSTimeSeries"],
 								Map[Replace[td_TemporalData :> td["FirstValue"]]]
 							]
 						]
@@ -128,7 +128,7 @@ CreateTripEntityStore[dataDirectory_String ? DirectoryQ, plotChoiceDirectory : _
 						"Label" -> "end position",
 						"DefaultFunction" -> EntityFramework`BatchApplied[
 							RightComposition[
-								EntityProperty["Trip", "PositionTimeSeries"],
+								EntityProperty["Trip", "GPSTimeSeries"],
 								Map[Replace[td_TemporalData :> td["LastValue"]]]
 							]
 						]
@@ -255,14 +255,27 @@ getGPSTimeSeries[databinID_String][entities : {__Entity}] := Module[
 	
 	dateRange = getDateRange[entities];
 	
-	data = Normal @ Dataset @ Databin[databinID, dateRange, {"type", "t", "loc"}];
-	data = DeleteDuplicatesBy[data, KeyDrop[{"Timestamp"}]];
+	data = Normal @ Dataset @ Databin[databinID, dateRange, {"type", "t", "loc", "speed", "accuracy"}];
+	data = DeleteDuplicatesBy[data, KeyTake[{"type", "t"}]];
 	
 	(* TODO: Actually figure out time zone nonsense instead of resorting to using the "Timestamp" *)
 	data = Append[#, "t" -> #Timestamp] & /@ data;
 	
+	data = data // Select[
+		RightComposition[
+			Lookup[{"type", "t", "loc", "speed", "accuracy"}],
+			MatchQ[{_String, _DateObject, _GeoPosition, _Quantity, _Quantity}]
+		]
+	];
 	splitTrips = Split[data, #1["type"] =!= "end" &];
-	splitTrips = TimeSeries[Select[Lookup[#, {"t", "loc"}], MatchQ[{_DateObject, _GeoPosition}]]] & /@ splitTrips;
+	splitTrips = TemporalData[
+		Transpose[Lookup[#, {"loc", "speed", "accuracy"}]],
+		{Lookup[#, "t"]},
+		ResamplingMethod -> None,
+		MetaInformation -> <|
+			"Labels" -> {"Position", "Speed", "Accuracy"}
+		|>
+	]& /@ splitTrips;
 	
 	findMatchingTrips[splitTrips] /@ entities
 	
