@@ -164,17 +164,24 @@ GPSPlot[gpsTimeSeries_TemporalData, opts : OptionsPattern[]] := With[
 				{time, position, speed, accuracy},
 				{Red, GeoStyling[Opacity[1]], GeoDisk[position, accuracy]}
 			] @@@ Select[sliceData, #[[4]] < Quantity[100, "Meters"] &],
-			{
-				EdgeForm[Directive[Black]],
-				GeoStyling[Opacity[0]],
-				Function[
-					{time, position, speed, accuracy},
+			Function[
+				{time, position, speed, accuracy},
+				{
+					EdgeForm[
+						Directive[
+							Blend[
+								{Blue, Red},
+								QuantityMagnitude[speed, "Miles" / "Hours"] // Clip[#, {0, 80}]& // Rescale[#, {0, 80}]&
+							]
+						]
+					],
+					GeoStyling[Opacity[0]],
 					Tooltip[
 						GeoDisk[position, Quantity[50, "Meters"]],
 						Column[{time, position, speed, accuracy}, Frame -> All]
 					]
-				] @@@ sliceData
-			}
+				}
+			] @@@ sliceData
 		},
 		opts
 	]
