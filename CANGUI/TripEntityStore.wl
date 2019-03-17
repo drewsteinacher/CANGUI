@@ -93,23 +93,62 @@ CreateTripEntityStore[dataDirectory_String ? DirectoryQ, plotChoiceDirectory : _
 					|>,
 					"GPSTimeSeries" -> <|
 						"Label" -> "GPS time series",
+						"DefaultFunction" -> EntityProperty["Trip", "GPSTimeSeries", {"AdditionalProperties" -> {}}]
+					|>,
+					{"GPSTimeSeries", {"AdditionalProperties" -> _List}} -> <|
+						"Label" -> "GPS time series",
 						"DefaultFunction" -> EntityFramework`BatchApplied[
 							Function[
-								entities,
-								entities // RightComposition[
-									(* TODO: Pass databin ID in via an option? *)
-									getGPSTimeSeries["ilkxZTEP"],
-									{entities, #1}&,
-									MapThread[
-										Function[
-											{entity, timeSeries},
-											If[MatchQ[timeSeries, _TemporalData],
-												entity["StartPosition"] = timeSeries["FirstValue"];
-												entity["EndPosition"] = timeSeries["LastValue"];
-											];
-											timeSeries
+								{entities, qualifiers},
+								Module[
+									{gpsTimeSeries, properties, propertyLabels},
+									
+									(* Get GPS information, update start/end times *)
+									gpsTimeSeries = entities // RightComposition[
+										(* TODO: Pass databin ID in via an option? *)
+										getGPSTimeSeries["ilkxZTEP"],
+										{entities, #1}&,
+										MapThread[
+											Function[
+												{entity, timeSeries},
+												If[MatchQ[timeSeries, _TemporalData],
+													
+													entity["StartTime"] = timeSeries["FirstDate"];
+													entity["EndTime"] = timeSeries["LastDate"];
+													
+													entity["StartPosition"] = timeSeries["FirstValue"];
+													entity["EndPosition"] = timeSeries["LastValue"];
+												];
+												timeSeries
+											]
 										]
-									]
+									];
+									
+									(* Gather other properties, integrate into one TemporalData object *)
+									properties = qualifiers["AdditionalProperties"];
+									If[Length[properties] > 0,
+										propertyLabels = Replace[p_EntityProperty :> StringTrim[p["Label"], " time series"]] /@ properties;
+										gpsTimeSeries = MapThread[
+											Function[
+												{gpsTS, newPropertyTSs},
+												Module[
+													{combinedTSList, validTSList, labels},
+													
+													combinedTSList = Join[gpsTS["Components"], newPropertyTSs];
+													
+													validTSList = TemporalData`TemporalDataQ /@ combinedTSList;
+													
+													combinedTSList = Pick[combinedTSList, validTSList];
+													labels = Pick[Join[gpsTS["MetaInformation"]["Labels"], propertyLabels], validTSList];
+													
+													TemporalData[combinedTSList, MetaInformation -> <|"Labels" -> labels|>]
+												]
+											],
+											{gpsTimeSeries, EntityValue[entities, properties]}
+										]
+									];
+									
+									gpsTimeSeries
 								]
 							],
 							BatchSize -> 100
