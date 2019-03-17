@@ -98,14 +98,15 @@ binaryFileFormat = Flatten[
 	}
 ];
 
-importDataFiles[files: {__File}] := importDataFiles[files[[All, 1]]];
-importDataFiles[File[file_String]] := importDataFiles[file];
+importDataFiles[files_] := importDataFiles[files, Automatic];
+importDataFiles[files: {__File}, startTime_] := importDataFiles[files[[All, 1]], startTime];
+importDataFiles[File[file_String], startTime_] := importDataFiles[file, startTime];
 
-importDataFiles[files:{__String}] := Association[importDataFiles /@ files];
-importDataFiles[file_String] := With[
+importDataFiles[files:{__String}, startTime_] := Association[importDataFiles[#, startTime]& /@ files];
+importDataFiles[file_String, startTimeIn_] := With[
 	{
 		rawBinaryData = BinaryReadList[file, binaryFileFormat],
-		startTime = fileNameToDateObject[file]
+		startTime = Replace[startTimeIn, {d_DateObject :> d, _ :> fileNameToDateObject[file]}]
 	},
 
 	Rule[

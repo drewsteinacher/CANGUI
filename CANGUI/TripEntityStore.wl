@@ -72,8 +72,8 @@ CreateTripEntityStore[dataDirectory_String ? DirectoryQ, plotChoiceDirectory : _
 							Function[
 								entities,
 								entities // RightComposition[
-									EntityProperty["Trip", "File"],
-									importDataFiles,
+									EntityValue[#, {"File", "StartTime"}]&,
+									importDataFiles @@@ # &,
 									Values,
 									Function[
 										listOfAssociations,
