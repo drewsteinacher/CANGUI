@@ -45,7 +45,7 @@ CreateTripEntityStore[dataDirectory_String ? DirectoryQ, plotChoiceDirectory : _
 						"Label" -> "start time"
 					|>,
 					"EndTime" -> <|
-						"Label" -> "start time"
+						"Label" -> "end time"
 					|>,
 					"Duration" -> <|
 						"Label" -> "duration",
