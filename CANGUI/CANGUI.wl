@@ -29,7 +29,7 @@ $plotChoiceDirectory = "PlotChoices";
 
 CANGUI[] := DynamicModule[
 	{
-		metadata = CANGUI`Private`populateCANFileMetadata["DataFiles"],
+		metadata = populateCANFileMetadata["DataFiles"],
 		dateChoice,
 		startTime, endTime,
 		(* TODO: Read this from a configuration file, add a saveConfiguration[] button? *)
@@ -114,7 +114,7 @@ dateTimeSelectionMenu[Dynamic[canData_], Dynamic[metadata_], Dynamic[dateChoice_
 
 refreshMetadataButton[Dynamic[metadata_]] := Button[
 	"Refresh files",
-	metadata = CANGUI`Private`populateCANFileMetadata["TestFiles"]
+	metadata = populateCANFileMetadata["TestFiles"]
 ];
 
 
