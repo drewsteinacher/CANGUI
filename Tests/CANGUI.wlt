@@ -9,7 +9,7 @@ VerificationTest[
 ];
 
 VerificationTest[
-	CANGUI`Private`getDuration["DataFiles\\04021105.DAT"]
+	getDuration["DataFiles\\17040211.05B"]
 	,
 	Quantity[44, "Seconds"]
 	,
@@ -17,117 +17,228 @@ VerificationTest[
 ];
 
 VerificationTest[
-	CANGUI`Private`getCANMetadata["DataFiles\\04021105.DAT"]
+	getCANMetadata["DataFiles\\17040211.05B"]
 	,
 	<|
-		"Date" -> DateObject[{2017, 4, 2}, "Day", "Gregorian", -6.],
-		"StartTime" -> TimeObject[{11, 5}, TimeZone -> -6.],
-		"EndTime" -> TimeObject[{11, 6, 0.}, TimeZone -> -6.],
+		"Date" -> DateObject[{2017, 4, 2}, "Day", "Gregorian", _],
+		"StartTime" -> DateObject[{2017, 4, 2, 11, 5, 0.}, "Instant", "Gregorian",
+			"America/Chicago"],
+		"EndTime" -> DateObject[{2017, 4, 2, 11, 6, 0.}, "Instant", "Gregorian",
+			"America/Chicago"],
 		"Duration" -> Quantity[44, "Seconds"]
 	|>,
+	SameTest -> MatchQ,
 	TestID -> "c12f07f7-dd10-4df8-b825-98e1277c4fd8"
 ];
 
 VerificationTest[
-	CANGUI`Private`populateCANFileMetadata["DataFiles_Smaller"]
+	populateCANFileMetadata["DataFiles_Smaller"]
 	,
 	<|
-		"DataFiles_Smaller\\09011611.DAT" -> <|
-			"Date" -> DateObject[{2017, 9, 1}, "Day", "Gregorian", -6.],
-			"StartTime" -> TimeObject[{16, 11}, TimeZone -> -6.],
-			"EndTime" -> TimeObject[{16, 20, 0.}, TimeZone -> -6.],
-			"Duration" -> Quantity[567, "Seconds"]
+		"DataFiles_Smaller\\19031716.30B" -> <|
+			"Date" -> DateObject[{2019, 3, 17}, "Day", "Gregorian", -4.],
+			"StartTime" -> DateObject[{2019, 3, 17, 16, 30, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"EndTime" -> DateObject[{2019, 3, 17, 16, 39, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"Duration" -> Quantity[522, "Seconds"]
 		|>,
-		"DataFiles_Smaller\\09011530.DAT" -> <|
-			"Date" -> DateObject[{2017, 9, 1}, "Day", "Gregorian", -6.],
-			"StartTime" -> TimeObject[{15, 30}, TimeZone -> -6.],
-			"EndTime" -> TimeObject[{15, 34, 0.}, TimeZone -> -6.],
-			"Duration" -> Quantity[256, "Seconds"]
+		"DataFiles_Smaller\\19031715.33B" -> <|
+			"Date" -> DateObject[{2019, 3, 17}, "Day", "Gregorian", -4.],
+			"StartTime" -> DateObject[{2019, 3, 17, 15, 33, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"EndTime" -> DateObject[{2019, 3, 17, 15, 47, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"Duration" -> Quantity[854, "Seconds"]
 		|>,
-		"DataFiles_Smaller\\09011515.DAT" -> <|
-			"Date" -> DateObject[{2017, 9, 1}, "Day", "Gregorian", -6.],
-			"StartTime" -> TimeObject[{15, 15}, TimeZone -> -6.],
-			"EndTime" -> TimeObject[{15, 23, 0.}, TimeZone -> -6.],
-			"Duration" -> Quantity[486, "Seconds"]
+		"DataFiles_Smaller\\19031419.12B" -> <|
+			"Date" -> DateObject[{2019, 3, 14}, "Day", "Gregorian", -4.],
+			"StartTime" -> DateObject[{2019, 3, 14, 19, 12, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"EndTime"-> DateObject[{2019, 3, 14, 19, 24, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"Duration" -> Quantity[725, "Seconds"]
 		|>,
-		"DataFiles_Smaller\\08311753.DAT" -> <|
-			"Date" -> DateObject[{2017, 8, 31}, "Day", "Gregorian", -6.],
-			"StartTime" -> TimeObject[{17, 53}, TimeZone -> -6.],
-			"EndTime" -> TimeObject[{18, 0, 0.}, TimeZone -> -6.],
-			"Duration" -> Quantity[442, "Seconds"]
+		"DataFiles_Smaller\\19031409.45B" -> <|
+			"Date" -> DateObject[{2019, 3, 14}, "Day", "Gregorian", -4.],
+			"StartTime" -> DateObject[{2019, 3, 14, 9, 45, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"EndTime" -> DateObject[{2019, 3, 14, 9, 54, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"Duration" -> Quantity[557, "Seconds"]
 		|>,
-		"DataFiles_Smaller\\08310927.DAT" -> <|
-			"Date" -> DateObject[{2017, 8, 31}, "Day", "Gregorian", -6.],
-			"StartTime" -> TimeObject[{9, 27}, TimeZone -> -6.],
-			"EndTime" -> TimeObject[{9, 35, 0.}, TimeZone -> -6.],
-			"Duration" -> Quantity[456, "Seconds"]
+		"DataFiles_Smaller\\18120917.06B" -> <|
+			"Date" -> DateObject[{2018, 12, 9}, "Day", "Gregorian", -4.],
+			"StartTime" -> DateObject[{2018, 12, 9, 16, 6, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"EndTime" -> DateObject[{2018, 12, 9, 16, 21, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"Duration" -> Quantity[896, "Seconds"]
 		|>,
-		"DataFiles_Smaller\\08301742.DAT" -> <|
-			"Date" -> DateObject[{2017, 8, 30}, "Day", "Gregorian", -6.],
-			"StartTime" -> TimeObject[{17, 42}, TimeZone -> -6.],
-			"EndTime" -> TimeObject[{17, 45, 0.}, TimeZone -> -6.],
-			"Duration" -> Quantity[183, "Seconds"]
+		"DataFiles_Smaller\\18120916.53B" -> <|
+			"Date" -> DateObject[{2018, 12, 9}, "Day", "Gregorian", -4.],
+			"StartTime"-> DateObject[{2018, 12, 9, 15, 53, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"EndTime"-> DateObject[{2018, 12, 9, 15, 55, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"Duration" -> Quantity[129, "Seconds"]
 		|>,
-		"DataFiles_Smaller\\08301729.DAT" -> <|
-			"Date" -> DateObject[{2017, 8, 30}, "Day", "Gregorian", -6.],
-			"StartTime" -> TimeObject[{17, 29}, TimeZone -> -6.],
-			"EndTime" -> TimeObject[{17, 36, 0.}, TimeZone -> -6.],
-			"Duration" -> Quantity[431, "Seconds"]
+		"DataFiles_Smaller\\18120916.21B" -> <|
+			"Date" -> DateObject[{2018, 12, 9}, "Day", "Gregorian", -4.],
+			"StartTime"-> DateObject[{2018, 12, 9, 15, 21, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"EndTime"-> DateObject[{2018, 12, 9, 15, 25, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"Duration" -> Quantity[234, "Seconds"]
 		|>,
-		"DataFiles_Smaller\\08300854.DAT" -> <|
-			"Date" -> DateObject[{2017, 8, 30}, "Day", "Gregorian", -6.],
-			"StartTime" -> TimeObject[{8, 54}, TimeZone -> -6.],
-			"EndTime" -> TimeObject[{9, 1, 0.}, TimeZone -> -6.],
-			"Duration" -> Quantity[448, "Seconds"]
+		"DataFiles_Smaller\\18120915.39B" -> <|
+			"Date" -> DateObject[{2018, 12, 9}, "Day", "Gregorian", -4.],
+			"StartTime"-> DateObject[{2018, 12, 9, 14, 39, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"EndTime"-> DateObject[{2018, 12, 9, 14, 43, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"Duration" -> Quantity[242, "Seconds"]
 		|>,
-		"DataFiles_Smaller\\08291919.DAT" -> <|
-			"Date" -> DateObject[{2017, 8, 29}, "Day", "Gregorian", -6.],
-			"StartTime" -> TimeObject[{19, 19}, TimeZone -> -6.],
-			"EndTime" -> TimeObject[{19, 29, 0.}, TimeZone -> -6.],
-			"Duration" -> Quantity[611, "Seconds"]
+		"DataFiles_Smaller\\18120914.11B" -> <|
+			"Date" -> DateObject[{2018, 12, 9}, "Day", "Gregorian", -4.],
+			"StartTime"-> DateObject[{2018, 12, 9, 13, 11, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"EndTime"-> DateObject[{2018, 12, 9, 13, 34, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"Duration" -> Quantity[1405, "Seconds"]
 		|>,
-		"DataFiles_Smaller\\08291906.DAT" -> <|
-			"Date" -> DateObject[{2017, 8, 29}, "Day", "Gregorian", -6.],
-			"StartTime" -> TimeObject[{19, 6}, TimeZone -> -6.],
-			"EndTime" -> TimeObject[{19, 14, 0.}, TimeZone -> -6.],
-			"Duration" -> Quantity[482, "Seconds"]
+		"DataFiles_Smaller\\18120817.12B" -> <|
+			"Date" -> DateObject[{2018, 12, 8}, "Day", "Gregorian", -4.],
+			"StartTime"-> DateObject[{2018, 12, 8, 16, 12, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"EndTime"-> DateObject[{2018, 12, 8, 16, 21, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"Duration" -> Quantity[544, "Seconds"]
 		|>,
-		"DataFiles_Smaller\\08291826.DAT" -> <|
-			"Date" -> DateObject[{2017, 8, 29}, "Day", "Gregorian", -6.],
-			"StartTime" -> TimeObject[{18, 26}, TimeZone -> -6.],
-			"EndTime" -> TimeObject[{18, 32, 0.}, TimeZone -> -6.],
-			"Duration" -> Quantity[385, "Seconds"]
+		"DataFiles_Smaller\\18120816.37B" -> <|
+			"Date" -> DateObject[{2018, 12, 8}, "Day", "Gregorian", -4.],
+			"StartTime"-> DateObject[{2018, 12, 8, 15, 37, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"EndTime"-> DateObject[{2018, 12, 8, 15, 49, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"Duration" -> Quantity[725, "Seconds"]
 		|>,
-		"DataFiles_Smaller\\08290926.DAT" -> <|
-			"Date" -> DateObject[{2017, 8, 29}, "Day", "Gregorian", -6.],
-			"StartTime" -> TimeObject[{9, 26}, TimeZone -> -6.],
-			"EndTime" -> TimeObject[{9, 31, 0.}, TimeZone -> -6.],
-			"Duration" -> Quantity[295, "Seconds"]
+		"DataFiles_Smaller\\18120815.54B" -> <|
+			"Date" -> DateObject[{2018, 12, 8}, "Day", "Gregorian", -4.],
+			"StartTime"-> DateObject[{2018, 12, 8, 14, 54, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"EndTime"-> DateObject[{2018, 12, 8, 15, 19, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"Duration" -> Quantity[1494, "Seconds"]
 		|>,
-		"DataFiles_Smaller\\08290925.DAT" -> <|
-			"Date" -> DateObject[{2017, 8, 29}, "Day", "Gregorian", -6.],
-			"StartTime" -> TimeObject[{9, 25}, TimeZone -> -6.],
-			"EndTime" -> TimeObject[{9, 26, 0.}, TimeZone -> -6.],
-			"Duration" -> Quantity[61, "Seconds"]
+		"DataFiles_Smaller\\18120815.41B" -> <|
+			"Date" -> DateObject[{2018, 12, 8}, "Day", "Gregorian", -4.],
+			"StartTime"-> DateObject[{2018, 12, 8, 14, 41, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"EndTime"-> DateObject[{2018, 12, 8, 14, 45, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"Duration" -> Quantity[231, "Seconds"]
 		|>,
-		"DataFiles_Smaller\\08281746.DAT" -> <|
-			"Date" -> DateObject[{2017, 8, 28}, "Day", "Gregorian", -6.],
-			"StartTime" -> TimeObject[{17, 46}, TimeZone -> -6.],
-			"EndTime" -> TimeObject[{17, 54, 0.}, TimeZone -> -6.],
-			"Duration" -> Quantity[505, "Seconds"]
+		"DataFiles_Smaller\\18120814.17B" -> <|
+			"Date" -> DateObject[{2018, 12, 8}, "Day", "Gregorian", -4.],
+			"StartTime"-> DateObject[{2018, 12, 8, 13, 17, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"EndTime"-> DateObject[{2018, 12, 8, 13, 29, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"Duration" -> Quantity[735, "Seconds"]
 		|>,
-		"DataFiles_Smaller\\08280932.DAT" -> <|
-			"Date" -> DateObject[{2017, 8, 28}, "Day", "Gregorian", -6.],
-			"StartTime" -> TimeObject[{9, 32}, TimeZone -> -6.],
-			"EndTime" -> TimeObject[{9, 39, 0.}, TimeZone -> -6.],
-			"Duration" -> Quantity[441, "Seconds"]
+		"DataFiles_Smaller\\18120719.41B" -> <|
+			"Date" -> DateObject[{2018, 12, 7}, "Day", "Gregorian", -4.],
+			"StartTime"-> DateObject[{2018, 12, 7, 18, 41, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"EndTime"-> DateObject[{2018, 12, 7, 19, 2, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"Duration" -> Quantity[1247, "Seconds"]
+		|>,
+		"DataFiles_Smaller\\18120711.15B" -> <|
+			"Date" -> DateObject[{2018, 12, 7}, "Day", "Gregorian", -4.],
+			"StartTime"-> DateObject[{2018, 12, 7, 10, 15, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"EndTime"-> DateObject[{2018, 12, 7, 10, 32, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"Duration" -> Quantity[1035, "Seconds"]
+		|>,
+		"DataFiles_Smaller\\18120610.51B" -> <|
+			"Date" -> DateObject[{2018, 12, 6}, "Day", "Gregorian", -4.],
+			"StartTime"-> DateObject[{2018, 12, 6, 9, 51, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"EndTime"-> DateObject[{2018, 12, 6, 10, 4, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"Duration" -> Quantity[766, "Seconds"]
+		|>,
+		"DataFiles_Smaller\\18120519.31B" -> <|
+			"Date" -> DateObject[{2018, 12, 5}, "Day", "Gregorian", -4.],
+			"StartTime"-> DateObject[{2018, 12, 5, 18, 31, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"EndTime"-> DateObject[{2018, 12, 5, 18, 41, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"Duration" -> Quantity[586, "Seconds"]
+		|>,
+		"DataFiles_Smaller\\18120519.06B" -> <|
+			"Date" -> DateObject[{2018, 12, 5}, "Day", "Gregorian", -4.],
+			"StartTime"-> DateObject[{2018, 12, 5, 18, 6, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"EndTime"-> DateObject[{2018, 12, 5, 18, 23, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"Duration" -> Quantity[1026, "Seconds"]
+		|>,
+		"DataFiles_Smaller\\18120510.51B" -> <|
+			"Date" -> DateObject[{2018, 12, 5}, "Day", "Gregorian", -4.],
+			"StartTime"-> DateObject[{2018, 12, 5, 9, 51, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"EndTime"-> DateObject[{2018, 12, 5, 10, 6, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"Duration" -> Quantity[895, "Seconds"]
+		|>,
+		"DataFiles_Smaller\\18120419.10B" -> <|
+			"Date" -> DateObject[{2018, 12, 4}, "Day", "Gregorian", -4.],
+			"StartTime"-> DateObject[{2018, 12, 4, 18, 10, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"EndTime"-> DateObject[{2018, 12, 4, 18, 28, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"Duration" -> Quantity[1075, "Seconds"]
+		|>,
+		"DataFiles_Smaller\\18083012.43B" -> <|
+			"Date" -> DateObject[{2018, 8, 30}, "Day", "Gregorian", -4.],
+			"StartTime"-> DateObject[{2018, 8, 30, 12, 43, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"EndTime"-> DateObject[{2018, 8, 30, 12, 54, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"Duration" -> Quantity[675, "Seconds"]
+		|>,
+		"DataFiles_Smaller\\18083009.36B" -> <|
+			"Date" -> DateObject[{2018, 8, 30}, "Day", "Gregorian", -4.],
+			"StartTime"-> DateObject[{2018, 8, 30, 9, 36, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"EndTime"-> DateObject[{2018, 8, 30, 9, 46, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"Duration" -> Quantity[613, "Seconds"]
+		|>,
+		"DataFiles_Smaller\\18082920.56B" -> <|
+			"Date" -> DateObject[{2018, 8, 29}, "Day", "Gregorian", -4.],
+			"StartTime"-> DateObject[{2018, 8, 29, 20, 56, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"EndTime"-> DateObject[{2018, 8, 29, 21, 5, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"Duration" -> Quantity[518, "Seconds"]
+		|>,
+		"DataFiles_Smaller\\18082920.30B" -> <|
+			"Date" -> DateObject[{2018, 8, 29}, "Day", "Gregorian", -4.],
+			"StartTime"-> DateObject[{2018, 8, 29, 20, 30, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"EndTime"-> DateObject[{2018, 8, 29, 20, 49, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"Duration" -> Quantity[1167, "Seconds"]
+		|>,
+		"DataFiles_Smaller\\18082920.01B" -> <|
+			"Date" -> DateObject[{2018, 8, 29}, "Day", "Gregorian", -4.],
+			"StartTime"-> DateObject[{2018, 8, 29, 20, 1, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"EndTime"-> DateObject[{2018, 8, 29, 20, 17, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"Duration" -> Quantity[974, "Seconds"]
+		|>,
+		"DataFiles_Smaller\\18082918.38B" -> <|
+			"Date" -> DateObject[{2018, 8, 29}, "Day", "Gregorian", -4.],
+			"StartTime"-> DateObject[{2018, 8, 29, 18, 38, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"EndTime"-> DateObject[{2018, 8, 29, 18, 51, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"Duration" -> Quantity[754, "Seconds"]
+		|>,
+		"DataFiles_Smaller\\18082909.56B" -> <|
+			"Date" -> DateObject[{2018, 8, 29}, "Day", "Gregorian", -4.],
+			"StartTime"-> DateObject[{2018, 8, 29, 9, 56, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"EndTime"-> DateObject[{2018, 8, 29, 10, 9, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"Duration" -> Quantity[785, "Seconds"]
+		|>,
+		"DataFiles_Smaller\\18082821.17B" -> <|
+			"Date" -> DateObject[{2018, 8, 28}, "Day", "Gregorian", -4.],
+			"StartTime"-> DateObject[{2018, 8, 28, 21, 17, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"EndTime"-> DateObject[{2018, 8, 28, 21, 31, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"Duration" -> Quantity[820, "Seconds"]
+		|>,
+		"DataFiles_Smaller\\18082820.13B" -> <|
+			"Date" -> DateObject[{2018, 8, 28}, "Day", "Gregorian", -4.],
+			"StartTime"-> DateObject[{2018, 8, 28, 20, 13, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"EndTime"-> DateObject[{2018, 8, 28, 20, 18, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"Duration" -> Quantity[276, "Seconds"]
+		|>,
+		"DataFiles_Smaller\\18082819.17B" -> <|
+			"Date" -> DateObject[{2018, 8, 28}, "Day", "Gregorian", -4.],
+			"StartTime"-> DateObject[{2018, 8, 28, 19, 17, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"EndTime"-> DateObject[{2018, 8, 28, 19, 35, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"Duration" -> Quantity[1055, "Seconds"]
+		|>,
+		"DataFiles_Smaller\\18082814.34B" -> <|
+			"Date" -> DateObject[{2018, 8, 28}, "Day", "Gregorian", -4.],
+			"StartTime"-> DateObject[{2018, 8, 28, 14, 34, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"EndTime"-> DateObject[{2018, 8, 28, 14, 49, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"Duration" -> Quantity[920, "Seconds"]
+		|>,
+		"DataFiles_Smaller\\18082718.10B" -> <|
+			"Date" -> DateObject[{2018, 8, 27}, "Day", "Gregorian", -4.],
+			"StartTime"-> DateObject[{2018, 8, 27, 18, 10, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"EndTime"-> DateObject[{2018, 8, 27, 19, 27, 0.}, "Instant", "Gregorian", "America/Chicago"],
+			"Duration" -> Quantity[4644, "Seconds"]
 		|>
 	|>,
 	TestID -> "b09784e4-9168-4092-bc58-1f3dfd017d08"
 ];
 
 VerificationTest[
-	CANGUI`Private`parseRawCANData[
+	parseRawCANData[
 		{
 			{0, 338, 225, 108, 0, 0, 0, 0, 24, 128},
 			{0, 328, 14, 21, 169, 136, 65, 0, 255, 5},
