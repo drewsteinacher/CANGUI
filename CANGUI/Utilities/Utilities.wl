@@ -13,6 +13,7 @@ parseRawCANData;
 GetPlotChoiceTimeSeries;
 GPSPlot;
 TimeSeriesSliceData;
+TimeSeriesAddUnits;
 
 Begin["`Private`"];
 
@@ -136,7 +137,7 @@ parseRawCANData[___] := $Failed;
 
 
 GetPlotChoiceTimeSeries[plotChoice_Association, relevantCANData_] := Module[
-	{keys, combinedMessageData0, combinedMessageData},
+	{keys, combinedMessageData0, combinedMessageData, units, resamplingRate},
 	
 	keys = StringTrim @ StringSplit[plotChoice["ID"], ","];
 	keys = FromDigits[#, 16]& /@ keys;
@@ -149,6 +150,16 @@ GetPlotChoiceTimeSeries[plotChoice_Association, relevantCANData_] := Module[
 	combinedMessageData0 = Select[KeyTake[relevantCANData, keys], FreeQ[_Missing]];
 	combinedMessageData = Join @@@ (Map[#["Components"]&] /@ Values[combinedMessageData0]);
 	combinedMessageData = plotChoice["Function"] @@@ combinedMessageData;
+	
+	resamplingRate = plotChoice["ResamplingRate"];
+	If[resamplingRate =!= None,
+		combinedMessageData = TimeSeriesResample[#, resamplingRate]& /@ combinedMessageData;
+	];
+	
+	units = plotChoice["Units"];
+	If[units =!= None,
+		combinedMessageData = TimeSeriesAddUnits[combinedMessageData, units];
+	];
 	
 	First @ combinedMessageData
 ];
@@ -193,6 +204,10 @@ TimeSeriesSliceData[td_TemporalData] := With[
 	{times = td["Times"]},
 	Transpose[Prepend[td["SliceData", times], DateObject /@ times]]
 ];
+
+TimeSeriesAddUnits::usage = "TimeSeriesAddUnits[ts, units] adds the given units to the values of the TimeSeries via QuantityArray";
+TimeSeriesAddUnits[l_List, units_] := TimeSeriesAddUnits[#, units]& /@ l;
+TimeSeriesAddUnits[td_TemporalData, units_] := TimeSeries[N @ QuantityArray[td["Values"], units], {td["Times"]}];
 
 End[];
 

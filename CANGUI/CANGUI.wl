@@ -18,6 +18,8 @@ emptyPlotChoice = <|
 	"ID" -> "",
 	"Name" -> "",
 	"Function" -> (#1&),
+	"Units" -> None,
+	"ResamplingRate" -> None,
 	"Options" -> Hold[{}],
 	"PlotRange" -> Full,
 	"FrameLabel" -> "",
@@ -228,6 +230,8 @@ plotChoiceEditor[Dynamic[plotChoice_]] := Grid[
 		{"IDs:", InputField[Dynamic[plotChoice["ID"]], String]},
 		{"Name:", InputField[Dynamic[plotChoice["Name"]], String]},
 		{"Function:", InputField[Dynamic[plotChoice["Function"]], Expression]},
+		{"Units:", InputField[Dynamic[plotChoice["Units"]], Expression]},
+		{"Resampling:", InputField[Dynamic[plotChoice["ResamplingRate"]], Expression]},
 		{"Range:", InputField[Dynamic[plotChoice["PlotRange"]], Expression]},
 		{"Label:", InputField[Dynamic[plotChoice["FrameLabel"]], String]},
 		{"ReferenceLines:", InputField[Dynamic[plotChoice["ReferenceLines"]], Hold[Expression]]},
@@ -418,7 +422,7 @@ plottingArea[Dynamic[canData_], Dynamic[metadata_], Dynamic[startTime_], Dynamic
 		If[validPlotChoiceQ[plotChoice],
 			
 			(* TODO: Modularize this? *)
-			Module[{keys, combinedMessageData0},
+			Module[{keys, combinedMessageData0, frameLabel, units, resamplingRate},
 				
 				keys = StringTrim @ StringSplit[plotChoice["ID"], ","];
 				keys = FromDigits[#, 16]& /@ keys;
@@ -433,10 +437,31 @@ plottingArea[Dynamic[canData_], Dynamic[metadata_], Dynamic[startTime_], Dynamic
 				combinedMessageData = Join @@@ (Map[#["Components"]&] /@ Values[Values[combinedMessageData0]]);
 				combinedMessageData = plotChoice["Function"] @@@ combinedMessageData;
 				
+				frameLabel = plotChoice["FrameLabel"];
+				
+				units = plotChoice["Units"];
+				If[units =!= None,
+					combinedMessageData = TimeSeriesAddUnits[combinedMessageData, units];
+					frameLabel = Replace[
+						{frameLabel, Quantity[None, units]},
+						{
+							{None | "", u_} -> u,
+							{x_, u_} :> Row[{x, Row[{"(", u, ")"}]}, Spacer[1]]
+						}
+					];
+				];
+				
+				resamplingRate = plotChoice["ResamplingRate"];
+				If[resamplingRate =!= None,
+					combinedMessageData = TimeSeriesResample[#, resamplingRate]& /@ combinedMessageData;
+				];
+				
+				
+				
 				DateListPlot[
 					combinedMessageData,
 					Sequence @@ ReleaseHold[plotChoice["Options"]],
-					FrameLabel -> {None, plotChoice["FrameLabel"]},
+					FrameLabel -> {None, frameLabel},
 					ImageSize -> Large,
 					PlotRange -> {{startTime, endTime}, plotChoice["PlotRange"]},
 					PlotRangePadding -> Scaled[0.05],
@@ -483,6 +508,8 @@ validPlotChoiceQ[plotChoice_Association] := With[{ids = StringTrim @ StringSplit
 		StringLength[plotChoice["Name"]] > 0,
 		Quiet[MatchQ[FromDigits[#, 16]& /@ ids, {__Integer}]],
 		MatchQ[plotChoice["Function"], f_Function /; ContainsOnly[Cases[f ,_Slot, Infinity], Slot /@ Range[8 * Length[ids]]]],
+		MatchQ[plotChoice["Units"], None | _?KnownUnitQ],
+		MatchQ[plotChoice["ResamplingRate"], None | _?Positive],
 		MatchQ[plotChoice["PlotRange"], Automatic | Full | All | {Repeated[Automatic | _?NumberQ, {2}]}],
 		MatchQ[plotChoice["Options"], Hold[{___Rule}]]
 	]
