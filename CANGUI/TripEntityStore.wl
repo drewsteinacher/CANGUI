@@ -180,6 +180,7 @@ CreateTripEntityStore[dataDirectory_String ? DirectoryQ, plotChoiceDirectory : _
 ];
 
 CreateTripEntityStore::invalid = "Invalid directory ``";
+CreateTripEntityStore::duplicates = "The following properties are duplicates: ``";
 CreateTripEntityStore[directory_, ___] := (Message[CreateTripEntityStore::invalid, directory]; $Failed);
 
 getTripData[dataDirectory_String] := Module[
@@ -205,13 +206,20 @@ getTripData[dataDirectory_String] := Module[
 ];
 
 getPropertiesFromPlotChoices[plotChoicesDirectory_String] := Module[
-	{choices, properties},
+	{choices, properties, canonicalNameToMultipleChoices},
 	
 	choices = importLatestPlotChoiceFile[plotChoicesDirectory];
+	choices = Select[choices, StringLength[#Name] > 0&];
 	
-	properties = getPropertyEntryFromPlotChoice /@ Select[choices, StringLength[#Name] > 0&];
+	canonicalNameToMultipleChoices = choices // RightComposition[
+		GroupBy[getPropertyCanonicalNameFromPlotChoiceName[#Name]&],
+		Select[Length[#] > 1&],
+		KeyValueMap[
+			Message[CreateTripEntityStore::duplicates, KeyTake[#2, {"ID", "Name"}]]&
+		]
+	];
 	
-	(* TODO: Deal with duplicate properties by numbering them? *)
+	properties = getPropertyEntryFromPlotChoice /@ choices;
 	Flatten[properties]
 ];
 getPropertiesFromPlotChoices[___] := <||>;
@@ -276,8 +284,9 @@ getPropertyEntryFromPlotChoice = Function[
 ];
 
 getPropertyCanonicalNameFromPlotChoiceName = RightComposition[
-	StringReplace["%" -> "Percent"],
-	StringDelete["(" | ")" | "\"" | "?"],
+	StringReplace[{"%" -> "Percent", "+" -> "Plus"}],
+	StringReplace[Except[LetterCharacter | DigitCharacter] -> " "],
+	StringReplace[Whitespace -> " "],
 	StringSplit /* Capitalize /* StringJoin
 ];
 
