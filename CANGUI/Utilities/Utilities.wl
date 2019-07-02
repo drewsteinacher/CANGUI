@@ -135,9 +135,9 @@ parseRawCANData[data: {{__Integer}..}] := With[
 ];
 parseRawCANData[___] := $Failed;
 
-
+GetPlotChoiceTimeSeries::args = "Cannot fill Function expecting `` slots with `` arguments.";
 GetPlotChoiceTimeSeries[plotChoice_Association, relevantCANData_] := Module[
-	{keys, combinedMessageData0, combinedMessageData, units, resamplingRate},
+	{keys, combinedMessageData0, combinedMessageData, function, maxSlot, minArguments, units, resamplingRate},
 	
 	keys = StringTrim @ StringSplit[plotChoice["ID"], ","];
 	keys = FromDigits[#, 16]& /@ keys;
@@ -149,7 +149,15 @@ GetPlotChoiceTimeSeries[plotChoice_Association, relevantCANData_] := Module[
 	
 	combinedMessageData0 = Select[KeyTake[relevantCANData, keys], FreeQ[_Missing]];
 	combinedMessageData = Join @@@ (Map[#["Components"]&] /@ Values[combinedMessageData0]);
-	combinedMessageData = plotChoice["Function"] @@@ combinedMessageData;
+	
+	function = plotChoice["Function"];
+	maxSlot = Max @ Cases[function, Slot[n_Integer] :> n, Infinity];
+	combinedMessageData = Replace[
+		{
+			l_List /; (Length[l] >= maxSlot) :> function @@ l,
+			x_ :> (Message[GetPlotChoiceTimeSeries::args, maxSlot, Length[x]]; $Failed)
+		}
+	] /@ combinedMessageData;
 	
 	resamplingRate = plotChoice["ResamplingRate"];
 	If[resamplingRate =!= None,
