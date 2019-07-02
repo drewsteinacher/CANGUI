@@ -249,10 +249,9 @@ importLatestPlotChoiceFile[plotChoicesDirectory_String] := Module[
 getPropertyEntryFromPlotChoice = Function[
 	plotChoice,
     Module[
-		{longerName, propertyCanonicalName, aggregationFunctions},
+		{longerName, propertyCanonicalName},
 	    longerName = plotChoice["Name"] <> " time series";
 	    propertyCanonicalName = getPropertyCanonicalNameFromPlotChoiceName[longerName];
-	    aggregationFunctions = {Min, Mean, Median, StandardDeviation, Max};
 	    {
 		    Rule[
 				propertyCanonicalName,
