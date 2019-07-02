@@ -254,14 +254,7 @@ getPropertyEntryFromPlotChoice = Function[
 					"DefaultFunction" -> Function[entity,
 						entity // RightComposition[
 							#["RawData"]&,
-							GetPlotChoiceTimeSeries[plotChoice, {#}]&,
-							Function[
-								timeSeries,
-								If[TemporalData`TimeSeriesQ[timeSeries],
-									(entity[EntityProperty["Trip", propertyCanonicalName, {"AggregationFunction" -> #}]] = #[timeSeries])& /@ aggregationFunctions;
-								];
-								timeSeries
-							]
+							GetPlotChoiceTimeSeries[plotChoice, {#}]&
 						]
 					],
 					"PlotChoice" -> plotChoice
@@ -290,7 +283,7 @@ getPropertyEntryFromPlotChoice = Function[
 					    ]
 				    ]
 			    |>
-		    ]& /@ aggregationFunctions
+		    ]
 	    }
 	]
 ];
