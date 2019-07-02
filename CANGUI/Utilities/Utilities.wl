@@ -14,6 +14,7 @@ GetPlotChoiceTimeSeries;
 GPSPlot;
 TimeSeriesSliceData;
 TimeSeriesAddUnits;
+TimeSeriesSelect;
 
 Begin["`Private`"];
 
@@ -216,6 +217,19 @@ TimeSeriesSliceData[td_TemporalData] := With[
 TimeSeriesAddUnits::usage = "TimeSeriesAddUnits[ts, units] adds the given units to the values of the TimeSeries via QuantityArray";
 TimeSeriesAddUnits[l_List, units_] := TimeSeriesAddUnits[#, units]& /@ l;
 TimeSeriesAddUnits[td_TemporalData, units_] := TimeSeries[N @ QuantityArray[td["Values"], units], {td["Times"]}];
+
+TimeSeriesSelect::usage = "TimeSeriesSelect[tseries, crit] returns a list of TimeSeries portions from tseries for which crit returns True for each value.";
+TimeSeriesSelect[ts_TemporalData, criteria_] := Module[
+	{boolTS, peaks, windows},
+	boolTS = TimeSeriesMap[criteria /* Boole, ts];
+	peaks = FindPeaks[boolTS, 0, $MinMachineNumber, 0.5];
+	windows = If[boolTS["FirstValue"] === 0,
+		peaks["Times"],
+		Join[{ts["FirstTime"]}, peaks["Times"], {ts["LastTime"]}]
+	];
+	windows = Partition[windows, 2];
+	TimeSeriesWindow[ts, #] & /@ windows
+];
 
 End[];
 

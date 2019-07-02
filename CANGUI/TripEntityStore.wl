@@ -10,6 +10,7 @@ BeginPackage["CANGUI`TripEntityStore`",
 ];
 
 CreateTripEntityStore;
+$StopSpeedThreshold = Quantity[15., "Miles" / "Hours"];
 
 Begin["`Private`"];
 
@@ -170,6 +171,13 @@ CreateTripEntityStore[dataDirectory_String ? DirectoryQ, plotChoiceDirectory : _
 								EntityProperty["Trip", "GPSTimeSeries"],
 								Map[Replace[td_TemporalData :> td["LastValue"]]]
 							]
+						]
+					|>,
+					"StoppedTimes" -> <|
+						"Label" -> "stopped times",
+						"DefaultFunction" -> Function[
+							entity,
+							{#["FirstTime"], #["LastTime"]}& /@ TimeSeriesSelect[entity["SpeedometerTimeSeries"], LessThan[$StopSpeedThreshold]]
 						]
 					|>,
 					tripPropertyData
