@@ -69,8 +69,8 @@ CreateTripEntityStore[dataDirectory_String ? DirectoryQ, plotChoiceDirectory : _
 					|>,
 					"RawData" -> <|
 						"Label" -> "raw data",
-						"DefaultFunction" -> EntityFramework`BatchApplied[
-							Function[
+						"DefaultFunction" -> EntityFramework`CachedEntityFunction[
+							EntityFramework`BatchApplied @ Function[
 								entities,
 								entities // RightComposition[
 									EntityValue[#, {"File", "StartTime"}]&,
@@ -89,7 +89,9 @@ CreateTripEntityStore[dataDirectory_String ? DirectoryQ, plotChoiceDirectory : _
 										]
 									]
 								]
-							]
+							],
+							"UseFileCache" -> False,
+							"UpdateInterval" -> Quantity[5, "Minutes"]
 						]
 					|>,
 					"GPSTimeSeries" -> <|
