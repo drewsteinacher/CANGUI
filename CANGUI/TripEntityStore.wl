@@ -91,7 +91,7 @@ CreateTripEntityStore[dataDirectory_String ? DirectoryQ, plotChoiceDirectory : _
 								]
 							],
 							"UseFileCache" -> False,
-							"UpdateInterval" -> Quantity[5, "Minutes"]
+							"UpdateInterval" -> Quantity[15, "Seconds"]
 						]
 					|>,
 					"GPSTimeSeries" -> <|
