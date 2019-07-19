@@ -222,10 +222,20 @@ TimeSeriesSelect::usage = "TimeSeriesSelect[tseries, crit] returns a list of Tim
 TimeSeriesSelect[ts_TemporalData, criteria_] := Module[
 	{boolTS, peaks, windows},
 	boolTS = TimeSeriesMap[criteria /* Boole, ts];
-	peaks = FindPeaks[boolTS, 0, $MinMachineNumber, 0.5];
-	windows = If[boolTS["FirstValue"] === 0,
-		peaks["Times"],
-		Join[{ts["FirstTime"]}, peaks["Times"], {ts["LastTime"]}]
+	(* TODO: RegularlySampledQ is required for FindPeaks *)
+	Quiet[
+		Check[
+			peaks = FindPeaks[boolTS, 0, $MinMachineNumber, 0.5];
+			windows = If[boolTS["FirstValue"] === 0,
+				peaks["Times"],
+				Join[{ts["FirstTime"]}, peaks["Times"], {ts["LastTime"]}]
+			];
+			,
+			windows = {ts["FirstTime"], ts["LastTime"]};
+			,
+			{FindPeaks::arg}
+		],
+		{FindPeaks::arg, Join::heads}
 	];
 	windows = Partition[windows, 2];
 	TimeSeriesWindow[ts, #] & /@ windows
