@@ -16,7 +16,11 @@ Begin["`Private`"];
 
 CreateTripEntityStore::usage = "CreateTripEntityStore[directory] creates an EntityStore from the trip files in the given directory";
 
-CreateTripEntityStore[dataDirectory_String ? DirectoryQ, plotChoiceDirectory : _String ? DirectoryQ : None] := With[
+CreateTripEntityStore[
+	dataDirectory_String ? DirectoryQ,
+	plotChoiceDirectory : _String ? DirectoryQ : None,
+	gpsBin : _Databin : None
+] := With[
 	{
 		tripEntityData = getTripData[dataDirectory],
 		tripPropertyData = getPropertiesFromPlotChoices[plotChoiceDirectory]
@@ -98,6 +102,7 @@ CreateTripEntityStore[dataDirectory_String ? DirectoryQ, plotChoiceDirectory : _
 						"Label" -> "GPS time series",
 						"DefaultFunction" -> EntityProperty["Trip", "GPSTimeSeries", {"AdditionalProperties" -> {}}]
 					|>,
+					If[gpsBin =!= None,
 					{"GPSTimeSeries", {"AdditionalProperties" -> _List}} -> <|
 						"Label" -> "GPS time series",
 						"DefaultFunction" -> EntityFramework`BatchApplied[
@@ -108,8 +113,7 @@ CreateTripEntityStore[dataDirectory_String ? DirectoryQ, plotChoiceDirectory : _
 									
 									(* Get GPS information, update start/end times *)
 									gpsTimeSeries = entities // RightComposition[
-										(* TODO: Pass databin ID in via an option? *)
-										getGPSTimeSeries["ilkxZTEP"],
+										getGPSTimeSeries[gpsBin],
 										{entities, #1}&,
 										MapThread[
 											Function[
@@ -157,6 +161,8 @@ CreateTripEntityStore[dataDirectory_String ? DirectoryQ, plotChoiceDirectory : _
 							BatchSize -> 100
 						]
 					|>,
+					Nothing
+					],
 					"StartPosition" -> <|
 						"Label" -> "start position",
 						"DefaultFunction" -> EntityFramework`BatchApplied[
@@ -311,7 +317,7 @@ getPropertyLabelFromPlotChoiceName = RightComposition[
 ];
 
 
-
+getGPSTimeSeries[Databin[databinID_String]][x_] := getGPSTimeSeries[databinID][x];
 getGPSTimeSeries[databinID_String][entities : {__Entity}] := Module[
 	{dateRange, data, splitTrips},
 	
