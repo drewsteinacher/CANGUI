@@ -393,7 +393,7 @@ statusArea[Dynamic[canData_], Dynamic[startTime_], Dynamic[endTime_], Dynamic[da
 		{
 			dateChoice,
 			Row[Framed/@{startTime, endTime}],
-			If[MatchQ[{startTime, endTime}, {__TimeObject}] && endTime > startTime,
+			If[MatchQ[{startTime, endTime}, {__DateObject}] && endTime > startTime,
 				"Ready to plot!",
 				"Nope, not ready to plot"
 			],
