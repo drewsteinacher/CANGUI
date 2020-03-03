@@ -40,7 +40,7 @@ getCANMetadata[fileName_String] := With[
 	},
 	With[
 		{
-			startTime = date - Quantity[TimeZoneOffset[-5, Entity["TimeZone", "America/Chicago"], date], "Hours"],
+			startTime = date - Quantity[TimeZoneOffset[-5, If[date < DateObject[{2020, 1, 1, 0}], Entity["TimeZone", "America/Chicago"], Entity["TimeZone", "America/New_York"]], date], "Hours"],
 			duration = getDuration[fileName]
 		},
 		<|
@@ -59,7 +59,10 @@ fileNameToDateObject[fileName_String] := With[
 	DateObject[
 		{2000, 0, 0} + fileNameNumbers[[ ;; 3]],
 		TimeObject[Append[fileNameNumbers[[-2 ;; ]], 0.]],
-		TimeZone -> Entity["TimeZone", "America/Chicago"]
+		TimeZone -> If[fileNameNumbers[[1]] < 20,
+			Entity["TimeZone", "America/Chicago"],
+			Entity["TimeZone", "America/New_York"]
+		]
 	]
 ];
 
