@@ -73,8 +73,8 @@ CreateTripEntityStore[
 					|>,
 					"RawData" -> <|
 						"Label" -> "raw data",
-						"DefaultFunction" -> EntityFramework`CachedEntityFunction[
-							EntityFramework`BatchApplied @ Function[
+						"DefaultFunction" -> EntityFramework`BatchApplied[
+							Function[
 								entities,
 								entities // RightComposition[
 									EntityValue[#, {"File", "StartTime"}]&,
@@ -94,8 +94,7 @@ CreateTripEntityStore[
 									]
 								]
 							],
-							"UseFileCache" -> False,
-							"UpdateInterval" -> Quantity[15, "Seconds"]
+							BatchSize -> 5
 						]
 					|>,
 					"GPSTimeSeries" -> <|
